@@ -1,0 +1,36 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:vue/vue3-recommended",
+    "@vue/eslint-config-airbnb",
+    "@vue/eslint-config-prettier",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["vue", "prettier"],
+  "rules": {
+    "prettier/prettier": "error",
+    "arrow-body-style": "off",
+    "class-methods-use-this": "off",
+    "consistent-return": "off",
+    "func-name-matching": "error",
+    "func-names": "error",
+    "func-style": "error",
+    "no-console": "error",
+    "no-empty-function": "error",
+    "no-param-reassign": "error",
+    "no-return-await": "off",
+    "no-undef": "off",
+    "no-underscore-dangle": "error",
+    "no-unsafe-negation": "error",
+    "no-unused-vars": ["error", {"argsIgnorePattern": "request|response|next"}],
+    "object-shorthand": "off",
+    "prefer-arrow-callback": "error",
+    "prefer-destructuring": "error",
+    "import/extensions": ["error", {"vue": "always", "json": "always"}],
+    "import/no-unresolved": "off",
+    "vue/component-definition-name-casing": ["error", "kebab-case"]
+  },
+  "settings": {
+    "import/resolver": {"node": {"extensions": [".vue"]}}
+  }
+}
