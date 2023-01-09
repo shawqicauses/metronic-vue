@@ -19,6 +19,8 @@ export const setI18nDirections = function setI18nDirections(language, direction)
   const extension = direction ? `${direction}.css` : `css`
 
   const HTML_ELEMENT = document.documentElement
+  const BODY_ELEMENT = document.body
+  const FONT_CSS_ELEMENT = document.getElementById("font-css-element")
   const PLUGINS_CSS_ELEMENT = document.getElementById("plugins-css-element")
   const STYLE_CSS_ELEMENT = document.getElementById("style-css-element")
   const KT_MENU_PLACEMENT_ELEMENTS = document.querySelectorAll("[data-kt-menu-placement]")
@@ -31,9 +33,20 @@ export const setI18nDirections = function setI18nDirections(language, direction)
   HTML_ELEMENT.setAttribute("direction", direction || "ltr")
   HTML_ELEMENT.style.direction = direction || "ltr"
 
-  const cdn = "https://preview.keenthemes.com/metronic8/demo1/assets"
-  const pluginsCSS = `${cdn}/plugins/global/plugins.bundle.${extension}`
-  const styleCSS = `${cdn}/css/style.bundle.${extension}`
+  const fontCDN = "https://fonts.googleapis.com/css2"
+  const fontURL =
+    direction === "rtl"
+      ? "Tajawal:wght@200;300;400;500;700;800;900"
+      : "Inter:wght@100;200;300;400;500;600;700;800;900"
+
+  const fontHREF = [fontCDN, ["family", fontURL].join("=")].join("?")
+  BODY_ELEMENT.style.fontFamily = direction === "rtl" ? "Tajawal" : "Inter"
+  FONT_CSS_ELEMENT.removeAttribute("href")
+  FONT_CSS_ELEMENT.setAttribute("href", fontHREF)
+
+  const cssCDN = "https://preview.keenthemes.com/metronic8/demo1/assets"
+  const pluginsCSS = `${cssCDN}/plugins/global/plugins.bundle.${extension}`
+  const styleCSS = `${cssCDN}/css/style.bundle.${extension}`
   PLUGINS_CSS_ELEMENT.setAttribute("href", pluginsCSS)
   STYLE_CSS_ELEMENT.setAttribute("href", styleCSS)
 

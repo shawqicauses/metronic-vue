@@ -19,7 +19,7 @@
       <!-- Begin:Symbol -->
       <a href="#" class="symbol symbol-circle symbol-45px w-45px bg-light me-3">
         <img
-          src="../../../../src/assets/media/brand-logos/google.svg"
+          src="../../../../../src/assets/media/brand-logos/google.svg"
           alt="Google Icon"
           class="p-4" />
       </a>
@@ -27,7 +27,7 @@
       <!-- Begin:Symbol -->
       <a href="#" class="symbol symbol-circle symbol-45px w-45px bg-light me-3">
         <img
-          src="../../../../src/assets/media/brand-logos/facebook.svg"
+          src="../../../../../src/assets/media/brand-logos/facebook.svg"
           alt="Facebook Icon"
           class="p-4" />
       </a>
@@ -35,11 +35,11 @@
       <!-- Begin:Symbol -->
       <a href="#" class="symbol symbol-circle symbol-45px w-45px bg-light">
         <img
-          src="../../../../src/assets/media/brand-logos/apple-black.svg"
+          src="../../../../../src/assets/media/brand-logos/apple-black.svg"
           alt="Apple Icon"
           class="theme-light-show p-4" />
         <img
-          src="../../../../src/assets/media/brand-logos/apple-black-dark.svg"
+          src="../../../../../src/assets/media/brand-logos/apple-black-dark.svg"
           alt="Apple Dark Icon"
           class="theme-dark-show p-4" />
       </a>

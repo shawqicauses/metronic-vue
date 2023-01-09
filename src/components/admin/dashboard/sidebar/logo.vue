@@ -3,15 +3,15 @@
     <!-- Begin:Logo Image -->
     <a href="#">
       <img
-        src="../../../../src/assets/media/logos/default.svg"
+        src="../../../../../src/assets/media/logos/default.svg"
         alt="Default Sidebar Logo"
         class="h-25px app-sidebar-logo-default theme-light-show" />
       <img
-        src="../../../../src/assets/media/logos/default-dark.svg"
+        src="../../../../../src/assets/media/logos/default-dark.svg"
         alt="Dark Sidebar Logo"
         class="h-25px app-sidebar-logo-default theme-dark-show" />
       <img
-        src="../../../../src/assets/media/logos/default-small.svg"
+        src="../../../../../src/assets/media/logos/default-small.svg"
         alt="Small Sidebar Logo"
         class="h-20px app-sidebar-logo-minimize" />
     </a>

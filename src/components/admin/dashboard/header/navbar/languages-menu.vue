@@ -11,7 +11,7 @@
           class="fs-8 rounded bg-light px-3 py-2 position-absolute translate-middle-y top-50 end-0">
           {{ language.name }}
           <img
-            :src="`../../../../../src/assets/media/flags/${language.icon}`"
+            :src="`../../../../../../src/assets/media/flags/${language.icon}`"
             :alt="`${language.name} Icon`"
             class="w-15px h-15px rounded-1 ms-2" />
         </span>
@@ -28,7 +28,7 @@
           @click.prevent="setLanguage(languageItem[['short', 'name'].join('')])">
           <span class="symbol symbol-20px me-4">
             <img
-              :src="`../../../../../src/assets/media/flags/${languageItem.icon}`"
+              :src="`../../../../../../src/assets/media/flags/${languageItem.icon}`"
               alt=""
               class="rounded-1" />
           </span>
@@ -44,7 +44,7 @@
 <script>
 import {computed, defineComponent, onBeforeMount, ref} from "vue"
 import {useStore} from "vuex"
-import {getI18nLanguages} from "../../../../plugins/i18n"
+import {getI18nLanguages} from "../../../../../plugins/i18n"
 
 export default defineComponent({
   name: "navbar-languages-menu",

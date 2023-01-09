@@ -1,7 +1,7 @@
 import {shallowRef} from "vue"
 import {createStore} from "vuex"
-import GroupIcon from "../components/icons/communication/group-icon.vue"
-import GlobeIcon from "../components/icons/home/globe-icon.vue"
+import GroupIcon from "../components/admin/icons/communication/group-icon.vue"
+import GlobeIcon from "../components/admin/icons/home/globe-icon.vue"
 import axiosClient from "../plugins/axios"
 
 const icons = {

@@ -1,10 +1,10 @@
 import {createRouter, createWebHistory} from "vue-router"
 import i18n, {getI18nLanguages} from "../plugins/i18n"
 import store from "../store"
-import AuthLayout from "../views/auth.vue"
-import MyDashboard from "../views/dashboard.vue"
-import SignIn from "../views/sign-in.vue"
-import SignUp from "../views/sign-up.vue"
+import AuthLayout from "../views/admin/auth.vue"
+import MyDashboard from "../views/admin/dashboard.vue"
+import SignIn from "../views/admin/sign-in.vue"
+import SignUp from "../views/admin/sign-up.vue"
 
 const router = createRouter({
   history: createWebHistory(),

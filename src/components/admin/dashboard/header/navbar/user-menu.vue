@@ -6,7 +6,7 @@
       data-kt-menu-trigger="{default: 'click', lg: 'hover'}"
       data-kt-menu-placement="bottom-end"
       class="cursor-pointer symbol symbol-30px symbol-md-40px">
-      <img src="../../../../../src/assets/media/avatars/image-06.jpg" alt="User Menu Toggle" />
+      <img src="../../../../../../src/assets/media/avatars/image-06.jpg" alt="User Menu Toggle" />
     </div>
     <!-- Begin:User Account Menu -->
     <div
@@ -17,7 +17,7 @@
         <div class="menu-content d-flex align-items-center px-3">
           <!-- Begin:Avatar -->
           <div class="symbol symbol-50px me-5">
-            <img alt="User" src="../../../../../src/assets/media/avatars/image-06.jpg" />
+            <img alt="User" src="../../../../../../src/assets/media/avatars/image-06.jpg" />
           </div>
           <!-- End:Avatar -->
           <!-- Begin:User Name -->

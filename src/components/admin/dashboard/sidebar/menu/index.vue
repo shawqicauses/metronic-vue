@@ -34,7 +34,7 @@
 
 <script>
 import {computed, defineComponent, onBeforeMount} from "vue"
-import store from "../../../../store"
+import store from "../../../../../store"
 import SidebarMenuItem from "./item.vue"
 
 export default defineComponent({

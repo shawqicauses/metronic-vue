@@ -3,7 +3,7 @@
     <a :href="link" :data-kt-lang="name" class="menu-link d-flex px-5">
       <span class="symbol symbol-20px me-4">
         <img
-          :src="`../../../src/assets/media/flags/${icon}`"
+          :src="`../../../../src/assets/media/flags/${icon}`"
           :alt="`${name} Icon`"
           data-kt-element="lang-flag"
           class="rounded-1" />

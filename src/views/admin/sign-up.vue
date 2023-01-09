@@ -16,9 +16,9 @@
 
 <script>
 import {defineComponent, onMounted} from "vue"
-import SignUpForm from "../components/sign-up/form.vue"
-import SignUpHeader from "../components/sign-up/header.vue"
-import FormFooter from "../components/uis/form/footer.vue"
+import SignUpForm from "../../components/admin/sign-up/form.vue"
+import SignUpHeader from "../../components/admin/sign-up/header.vue"
+import FormFooter from "../../components/admin/uis/form/footer.vue"
 
 export default defineComponent({
   name: "sign-up",

@@ -8,7 +8,7 @@
       data-kt-menu-offset="0px, 0px"
       class="btn btn-flex btn-link rotate">
       <img
-        :src="`../../../../src/assets/media/flags/${language.icon}`"
+        :src="`../../../../../src/assets/media/flags/${language.icon}`"
         alt="United States Icon"
         data-kt-element="current-lang-flag"
         class="w-25px h-25px rounded-circle me-3" />
@@ -51,7 +51,7 @@
 <script>
 import {computed, defineComponent, onBeforeMount, ref} from "vue"
 import {useStore} from "vuex"
-import {getI18nLanguages} from "../../../plugins/i18n"
+import {getI18nLanguages} from "../../../../plugins/i18n"
 import LanguagesMenuItem from "../languages-menu-item.vue"
 
 export default defineComponent({

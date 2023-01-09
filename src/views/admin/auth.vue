@@ -26,7 +26,7 @@
 
 <script>
 import {defineComponent, onMounted} from "vue"
-import AuthLogo from "../components/auth/logo.vue"
+import AuthLogo from "../../components/admin/auth/logo.vue"
 
 export default defineComponent({
   name: "my-auth",

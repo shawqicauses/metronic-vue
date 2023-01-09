@@ -13,8 +13,8 @@
 
 <script>
 import {defineComponent, onMounted} from "vue"
-import DashboardHeader from "../components/dashboard/header/index.vue"
-import DashboardWrapper from "../components/dashboard/wrapper.vue"
+import DashboardHeader from "../../components/admin/dashboard/header/index.vue"
+import DashboardWrapper from "../../components/admin/dashboard/wrapper.vue"
 
 export default defineComponent({
   name: "my-dashboard",
