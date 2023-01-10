@@ -1,10 +1,11 @@
 import {createRouter, createWebHistory} from "vue-router"
+import AuthLayout from "../components/layouts/admin/auth.vue"
+import DashboardLayout from "../components/layouts/admin/dashboard.vue"
 import i18n, {getI18nLanguages} from "../plugins/i18n"
 import store from "../store"
-import AuthLayout from "../views/admin/auth.vue"
-import MyDashboard from "../views/admin/dashboard.vue"
 import SignIn from "../views/admin/sign-in.vue"
 import SignUp from "../views/admin/sign-up.vue"
+import UsersList from "../views/users/list.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,7 +20,14 @@ const router = createRouter({
       path: "/dashboard",
       name: "dashboard",
       meta: {protected: true},
-      component: MyDashboard
+      component: DashboardLayout,
+      children: [
+        {
+          path: "/dashboard/users/list",
+          name: "users-list",
+          component: UsersList
+        }
+      ]
     },
     {
       path: "/auth",

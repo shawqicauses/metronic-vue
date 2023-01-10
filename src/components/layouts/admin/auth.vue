@@ -17,7 +17,7 @@
     <!-- End:Aside -->
     <!-- Begin:Body -->
     <div
-      style="background-image: url(../../../src/assets/media/auth/background.png)"
+      style="background-image: url(../../../../src/assets/media/auth/background.png)"
       class="d-none d-lg-flex flex-lg-row-fluid w-50 bgi-size-cover bgi-position-y-center bgi-position-x-start bgi-no-repeat" />
     <!-- End:Body -->
   </div>
@@ -26,7 +26,7 @@
 
 <script>
 import {defineComponent, onMounted} from "vue"
-import AuthLogo from "../../components/admin/auth/logo.vue"
+import AuthLogo from "../../admin/auth/logo.vue"
 
 export default defineComponent({
   name: "my-auth",

@@ -19,6 +19,15 @@
       <!-- End:Sidebar Menu -->
     </div>
     <!-- End:Sidebar -->
+    <!-- Begin:Main -->
+    <div id="kt_app_main" class="app-main flex-column flex-row-fluid">
+      <!-- Begin:Content Wrapper -->
+      <div class="d-flex flex-column flex-column-fluid">
+        <router-view></router-view>
+      </div>
+      <!-- End:Content Wrapper -->
+    </div>
+    <!-- End:Main -->
   </div>
 </template>
 
