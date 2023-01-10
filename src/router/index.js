@@ -23,7 +23,7 @@ const router = createRouter({
       component: DashboardLayout,
       children: [
         {
-          path: "/dashboard/users/list",
+          path: "/dashboard/users/index",
           name: "users-list",
           component: UsersList
         }
