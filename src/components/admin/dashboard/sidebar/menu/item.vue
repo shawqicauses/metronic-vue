@@ -19,12 +19,12 @@
       <!-- Begin:Menu Items -->
       <div v-for="child in children" :key="child.title" class="menu-item">
         <!-- Begin:Menu Link -->
-        <a class="menu-link" href="/">
+        <router-link :to="`/dashboard/${child.link.replaceAll('.', '/')}`" class="menu-link">
           <span class="menu-bullet">
             <span class="bullet bullet-dot"></span>
           </span>
           <span class="menu-title">{{ t(child.title) }}</span>
-        </a>
+        </router-link>
         <!-- End:Menu Link -->
       </div>
       <!-- End:Menu Items -->

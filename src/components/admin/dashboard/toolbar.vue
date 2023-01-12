@@ -93,7 +93,7 @@
                     data-placeholder="Select Option"
                     data-allow-clear="true"
                     class="form-select form-select-solid">
-                    <option value="0"></option>
+                    <option></option>
                     <option value="1">Approved</option>
                     <option value="2">Pending</option>
                     <option value="3">In Process</option>
@@ -161,7 +161,7 @@
               <!-- Begin:Actions -->
               <div class="d-flex justify-content-end">
                 <button
-                  type="reset"
+                  type="button"
                   data-kt-menu-dismiss="true"
                   class="btn btn-sm btn-light btn-active-light-primary me-2">
                   Reset

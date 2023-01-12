@@ -28,6 +28,7 @@
     "prefer-destructuring": "error",
     "import/extensions": ["error", {"vue": "always", "json": "always"}],
     "import/no-unresolved": "off",
+    "import/order": "off",
     "vue/component-definition-name-casing": ["error", "kebab-case"]
   },
   "settings": {
