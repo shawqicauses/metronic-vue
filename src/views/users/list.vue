@@ -93,71 +93,70 @@
         <!-- End:Card Header -->
         <!-- Begin:Card Body -->
         <div class="card-body py-4">
-          <Datatable
-        @on-sort="sort"
-        @on-items-select="onItemSelect"
-        :data="tableData"
-        :header="tableHeader"
-        :enable-items-per-page-dropdown="true"
-        :checkbox-enabled="true"
-        checkbox-label="id"
-      >
-        <template v-slot:name="{ row: customer }">
-          {{ customer.name }}
-        </template>
-        <template v-slot:email="{ row: customer }">
-          <a href="#" class="text-gray-600 text-hover-primary mb-1">
-            {{ customer.email }}
-          </a>
-        </template>
-        <template v-slot:company="{ row: customer }">
-          {{ customer.company }}
-        </template>
-        <template v-slot:paymentMethod="{ row: customer }">
-          <img :src="customer.payment.icon" class="w-35px me-3" alt="" />{{
-            customer.payment.ccnumber
-          }}
-        </template>
-        <template v-slot:date="{ row: customer }">
-          {{ customer.date }}
-        </template>
-        <template v-slot:actions="{ row: customer }">
-          <a
-            href="#"
-            class="btn btn-sm btn-light btn-active-light-primary"
-            data-kt-menu-trigger="click"
-            data-kt-menu-placement="bottom-end"
-            data-kt-menu-flip="top-end"
-            >Actions
-            <span class="svg-icon svg-icon-5 m-0">
-              <inline-svg src="media/icons/duotune/arrows/arr072.svg" />
-            </span>
-          </a>
-          <!--begin::Menu-->
-          <div
-            class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semobold fs-7 w-125px py-4"
-            data-kt-menu="true"
-          >
-            <!--begin::Menu item-->
-            <div class="menu-item px-3">
-              <router-link
-                to="/apps/customers/customer-details"
-                class="menu-link px-3"
-                >View</router-link
-              >
-            </div>
-            <!--end::Menu item-->
-            <!--begin::Menu item-->
-            <div class="menu-item px-3">
-              <a @click="deleteCustomer(customer.id)" class="menu-link px-3"
-                >Delete</a
-              >
-            </div>
-            <!--end::Menu item-->
-          </div>
-          <!--end::Menu-->
-        </template>
-      </Datatable>
+          <data-table
+            :data="tableData"
+            :header="tableHeader"
+            :checkbox-enabled="true"
+            :checkbox-label="id"
+            :items-per-page-dropdown-enabled="true"
+            @on-sort="onSort"
+            @on-items-select="onItemsSelect">
+            <template #name="{row: customer}">
+              {{ customer.name }}
+            </template>
+            <template #email="{row: customer}">
+              <a href="#" class="text-gray-600 text-hover-primary mb-1"> {{ customer.email }}</a>
+            </template>
+            <template #company="{row: customer}">
+              {{ customer.company }}
+            </template>
+            <template #paymentMethod="{row: customer}">
+              <img :src="customer.payment.icon" alt="Payment Icon" class="w-35px me-3" />
+              {{ customer.payment.ccnumber }}
+            </template>
+            <template #date="{row: customer}">
+              {{ customer.date }}
+            </template>
+            <template #actions="{row: customer}">
+              <a
+                href="#"
+                data-kt-menu-trigger="click"
+                data-kt-menu-placement="bottom-end"
+                data-kt-menu-flip="top-end">
+                Actions
+                <span class="svg-icon svg-icon-5 m-0">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                    fill="none">
+                    <path
+                      d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z"
+                      fill="currentColor"></path>
+                  </svg>
+                </span>
+              </a>
+              <!-- Begin:Menu -->
+              <div
+                data-kt-menu="true"
+                class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4">
+                <!-- Begin:Menu Item -->
+                <div class="menu-item px-3">
+                  <router-link to="/dashboard/users/index" class="menu-link px-3">
+                    View
+                  </router-link>
+                </div>
+                <!-- End:Menu Item -->
+                <!-- Begin:Menu Item -->
+                <div class="menu-item px-3">
+                  <a href="#" class="menu-link px-3" @click="deleteCustomer(customer.id)">Delete</a>
+                </div>
+                <!-- End:Menu Item -->
+              </div>
+              <!-- End:Menu -->
+            </template>
+          </data-table>
         </div>
         <!-- End:Card Body -->
       </div>
@@ -171,129 +170,147 @@
 <script>
 import Toolbar from "@/components/admin/dashboard/toolbar.vue"
 import AddUserModal from "@/components/admin/modals/forms/add-user-modal.vue"
-import Datatable from "@/components/admin/kt-datatable/KTDataTable.vue";
-import { Sort } from "@/components/admin/kt-datatable/table-partials/models";
-import customers from "@/core/data/customers";
-import { ICustomer } from "@/core/data/customers";
-
-import {defineComponent, ref, onMounted} from "vue"
+import {defineComponent, onMounted, ref} from "vue"
+import DataTable from "../../components/admin/data-table/index.vue"
 
 export default defineComponent({
   name: "users-list",
-  components: {Toolbar, Datatable, AddUserModal},
+  components: {Toolbar, AddUserModal, DataTable},
   setup() {
     const tableHeader = ref([
       {
         columnName: "Customer Name",
         columnLabel: "name",
         sortEnabled: true,
-        columnWidth: 175,
+        columnWidth: 175
       },
       {
         columnName: "Email",
         columnLabel: "email",
         sortEnabled: true,
-        columnWidth: 230,
+        columnWidth: 230
       },
       {
         columnName: "Company",
         columnLabel: "company",
         sortEnabled: true,
-        columnWidth: 175,
+        columnWidth: 175
       },
       {
         columnName: "Payment Method",
         columnLabel: "paymentMethod",
         sortEnabled: true,
-        columnWidth: 175,
+        columnWidth: 175
       },
       {
         columnName: "Created Date",
         columnLabel: "date",
         sortEnabled: true,
-        columnWidth: 225,
+        columnWidth: 225
       },
       {
         columnName: "Actions",
         columnLabel: "actions",
-        sortEnabled: false,
-        columnWidth: 135,
-      },
-    ]);
-    const selectedIds = ref([]);
+        sortEnabled: true,
+        columnWidth: 135
+      }
+    ])
 
-    const tableData = ref(customers);
-    const initCustomers = ref([]);
+    const tableData = ref([
+      {
+        id: Math.floor(Math.random() * 99999) + 1,
+        name: "Dan Wilson",
+        email: "dam@consulting.com",
+        company: "Trinity Studio",
+        payment: {
+          icon: "media/svg/card-logos/visa.svg",
+          ccnumber: `**** ${Math.floor(Math.random() * (9999 - 1000 + 1) + 1000)}`,
+          label: "visa"
+        },
+        date: "18 Aug 2020. 3:34 PM"
+      },
+      {
+        id: Math.floor(Math.random() * 99999) + 1,
+        name: "Dan Wilson",
+        email: "dam@consulting.com",
+        company: "Trinity Studio",
+        payment: {
+          icon: "media/svg/card-logos/visa.svg",
+          ccnumber: `**** ${Math.floor(Math.random() * (9999 - 1000 + 1) + 1000)}`,
+          label: "visa"
+        },
+        date: "18 Aug 2020. 3:34 PM"
+      }
+    ])
+
+    const initCustomers = ref([])
+    const selectedIds = ref([])
+    const search = ref(null)
+
+    const deleteCustomer = function deleteCustomer() {
+      for (let index = 0; index < tableData.value.length; index += 1) {
+        if (tableData.value[index].id === id) {
+          tableData.value.splice(index, 1)
+        }
+      }
+    }
+
+    const deleteFewCustomers = function deleteFewCustomers() {
+      selectedIds.value.forEach((item) => {
+        deleteCustomer(item)
+      })
+
+      selectedIds.value.length = 0
+    }
+
+    const searchingFunction = function searchingFunction(object, value) {
+      // eslint-disable-next-line
+      for (let key in object) {
+        if (!Number.isInteger(object[key]) && !(typeof object[key] === "object"))
+          if (object[key].indexOf(value) !== -1) return true
+      }
+
+      return false
+    }
+
+    const searchItems = () => {
+      tableData.value.splice(0, tableData.value.length, ...initCustomers.value)
+      if (search.value !== "") {
+        const results = []
+        for (let column = 0; column < tableData.value.length; column += 1) {
+          if (searchingFunction(tableData.value[column], search.value))
+            results.push(tableData.value[column])
+        }
+
+        tableData.value.splice(0, tableData.value.length, ...results)
+      }
+    }
+
+    const onSort = function onSort(sort) {
+      const reverse = sort.order === "ASC".toLowerCase()
+      if (sort.label) arraySort(tableData.value, sort.label, {reverse})
+    }
+
+    const onItemsSelect = function onItemsSelect(selectedItems) {
+      if (selectedItems.length === 0) selectedIds.value = []
+      else selectedIds.value = [...selectedIds.value, ...selectedItems]
+    }
 
     onMounted(() => {
-      initCustomers.value.splice(0, tableData.value.length, ...tableData.value);
-    });
-
-    const deleteFewCustomers = () => {
-      selectedIds.value.forEach((item) => {
-        deleteCustomer(item);
-      });
-      selectedIds.value.length = 0;
-    };
-
-    const deleteCustomer = (id) => {
-      for (let i = 0; i < tableData.value.length; i++) {
-        if (tableData.value[i].id === id) {
-          tableData.value.splice(i, 1);
-        }
-      }
-    };
-
-    const search = ref("");
-    const searchItems = () => {
-      tableData.value.splice(0, tableData.value.length, ...initCustomers.value);
-      if (search.value !== "") {
-        let results = [];
-        for (let j = 0; j < tableData.value.length; j++) {
-          if (searchingFunc(tableData.value[j], search.value)) {
-            results.push(tableData.value[j]);
-          }
-        }
-        tableData.value.splice(0, tableData.value.length, ...results);
-      }
-    };
-
-    const searchingFunc = (obj, value) => {
-      for (let key in obj) {
-        if (!Number.isInteger(obj[key]) && !(typeof obj[key] === "object")) {
-          if (obj[key].indexOf(value) != -1) {
-            return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    const sort = (sort) => {
-      const reverse = sort.order === "asc";
-      if (sort.label) {
-        arraySort(tableData.value, sort.label, { reverse });
-      }
-    };
-    const onItemSelect = (selectedItems) => {
-      if (selectedItems.length === 0) {
-        selectedIds.value = [];
-      } else {
-        selectedIds.value = [...selectedIds.value, ...selectedItems];
-      }
-    };
+      initCustomers.value.splice(0, tableData.value.length, ...tableData.value)
+    })
 
     return {
-      tableData,
       tableHeader,
-      deleteCustomer,
-      search,
-      searchItems,
+      tableData,
       selectedIds,
+      search,
+      onItemsSelect,
+      deleteCustomer,
       deleteFewCustomers,
-      sort,
-      onItemSelect,
-    };
+      searchItems,
+      onSort
+    }
   }
 })
 </script>
