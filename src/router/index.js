@@ -5,7 +5,8 @@ import i18n, {getI18nLanguages} from "../plugins/i18n"
 import store from "../store"
 import SignIn from "../views/admin/sign-in.vue"
 import SignUp from "../views/admin/sign-up.vue"
-import UsersList from "../views/users/list.vue"
+import AddLanguages from "../views/languages/add.vue"
+import LanguagesList from "../views/languages/list.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -23,9 +24,14 @@ const router = createRouter({
       component: DashboardLayout,
       children: [
         {
-          path: "/dashboard/users/index",
-          name: "users-list",
-          component: UsersList
+          path: "/dashboard/languages/index",
+          name: "languages-list",
+          component: LanguagesList
+        },
+        {
+          path: "/dashboard/languages/create",
+          name: "add-languages",
+          component: AddLanguages
         }
       ]
     },

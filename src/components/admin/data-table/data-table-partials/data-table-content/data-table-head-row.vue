@@ -1,7 +1,7 @@
 <template>
   <thead>
     <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-      <th>
+      <th v-if="checkboxEnabled" :style="{width: '30px'}">
         <div class="form-check form-check-sm form-check-custom form-check-solid me-3">
           <label for="table-head-checkbox" class="sr-only">Checkbox</label>
           <input

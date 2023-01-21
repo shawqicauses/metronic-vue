@@ -7,7 +7,7 @@
         <!-- Begin:Title -->
         <h1
           class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-          Users List
+          {{ title }}
         </h1>
         <!-- End:Title -->
         <!-- Begin:Breadcrumbs -->
@@ -23,7 +23,7 @@
           </li>
           <!-- End:Item -->
           <!-- Begin:Item -->
-          <li class="breadcrumb-item text-muted">Users Management</li>
+          <li class="breadcrumb-item text-muted">Languages Management</li>
           <!-- End:Item -->
           <!-- Begin:Item -->
           <li class="breadcrumb-item">
@@ -31,7 +31,7 @@
           </li>
           <!-- End:Item -->
           <!-- Begin:Item -->
-          <li class="breadcrumb-item text-muted">Users</li>
+          <li class="breadcrumb-item text-muted">Languages</li>
           <!-- End:Item -->
         </ul>
         <!-- End:Breadcrumbs -->

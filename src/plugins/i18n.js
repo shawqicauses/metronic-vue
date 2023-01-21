@@ -53,13 +53,11 @@ export const setI18nDirections = function setI18nDirections(language, direction)
   KT_MENU_PLACEMENT_ELEMENTS.forEach((element) => {
     const placement = element.getAttribute("data-kt-menu-placement")
     if (direction === "rtl") {
-      element.removeAttribute("data-kt-menu-placement")
       if (placement === "bottom-start") element.setAttribute("data-kt-menu-placement", "bottom-end")
       if (placement === "right-start") element.setAttribute("data-kt-menu-placement", "left-start")
     }
 
     if (direction === "ltr") {
-      element.removeAttribute("data-kt-menu-placement")
       if (placement === "bottom-end") element.setAttribute("data-kt-menu-placement", "bottom-start")
       if (placement === "left-start") element.setAttribute("data-kt-menu-placement", "right-start")
     }

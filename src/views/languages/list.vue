@@ -1,6 +1,6 @@
 <template>
   <!-- Begin:Toolbar -->
-  <toolbar />
+  <toolbar title="Languages Management" />
   <!-- End:Toolbar -->
   <!-- Begin:Content -->
   <div id="kt_app_content" class="app-content flex-column-fluid">
@@ -37,12 +37,12 @@
                 </svg>
               </span>
               <!-- End:SVG Icon -->
-              <label for="search-users" class="sr-only">Search Users</label>
+              <label for="search-languages" class="sr-only">Search Languages</label>
               <input
-                id="search-users"
+                id="search-languages"
                 type="text"
-                placeholder="Search Users"
-                data-kt-user-table-filter="search"
+                placeholder="Search Languages"
+                data-kt-language-table-filter="search"
                 class="form-control form-control-solid w-250px ps-14" />
             </div>
             <!-- End:Search -->
@@ -51,11 +51,11 @@
           <!-- Begin:Card Toolbar -->
           <div class="card-toolbar">
             <!-- Begin:Toolbar -->
-            <div data-kt-user-table-toolbar="base" class="d-flex justify-content-end">
-              <!-- Begin:Add User -->
+            <div data-kt-language-table-toolbar="base" class="d-flex justify-content-end">
+              <!-- Begin:Add Language -->
               <button
                 type="button"
-                data-bs-target="#kt_modal_add_user"
+                data-bs-target="#kt_modal_add_language"
                 data-bs-toggle="modal"
                 class="btn btn-primary">
                 <!-- Begin:SVG Icon -->
@@ -79,13 +79,13 @@
                   </svg>
                 </span>
                 <!-- End:SVG Icon -->
-                Add User
+                Add Language
               </button>
-              <!-- End:Add User -->
+              <!-- End:Add Language -->
             </div>
             <!-- End:Toolbar -->
             <!-- Begin:Modal -->
-            <add-user-modal />
+            <add-language-modal />
             <!-- End:Modal -->
           </div>
           <!-- End:Card Toolbar -->
@@ -101,25 +101,28 @@
             :items-per-page-dropdown-enabled="true"
             @on-sort="onSort"
             @on-items-select="onItemsSelect">
-            <template #name="{row: customer}">
-              {{ customer.name }}
+            <template #name="{row: language}">
+              {{ language.name.charAt(0).toUpperCase() + language.name.slice(1) }}
             </template>
-            <template #email="{row: customer}">
-              <a href="#" class="text-gray-600 text-hover-primary mb-1"> {{ customer.email }}</a>
+            <template #shortname="{row: language}">
+              {{ language.shortname.toUpperCase() }}
             </template>
-            <template #company="{row: customer}">
-              {{ customer.company }}
+            <template #direction="{row: language}">
+              {{ language.direction.toUpperCase() }}
             </template>
-            <template #paymentMethod="{row: customer}">
-              <img :src="customer.payment.icon" alt="Payment Icon" class="w-35px me-3" />
-              {{ customer.payment.ccnumber }}
+            <template #dirword="{row: language}">
+              {{ language.dirword.charAt(0).toUpperCase() + language.dirword.slice(1) }}
             </template>
-            <template #date="{row: customer}">
-              {{ customer.date }}
+            <template #icon="{row: language}">
+              <img
+                :src="`../../../src/assets/media/flags/${language.icon}`"
+                :alt="`${language.icon}`"
+                class="w-20px h-20px rounded-1 ms-2" />
             </template>
-            <template #actions="{row: customer}">
+            <template #actions="{row: language}">
               <a
                 href="#"
+                class="btn btn-sm btn-light btn-active-light-primary"
                 data-kt-menu-trigger="click"
                 data-kt-menu-placement="bottom-end"
                 data-kt-menu-flip="top-end">
@@ -143,14 +146,14 @@
                 class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4">
                 <!-- Begin:Menu Item -->
                 <div class="menu-item px-3">
-                  <router-link to="/dashboard/users/index" class="menu-link px-3">
+                  <router-link to="/dashboard/languages/list" class="menu-link px-3">
                     View
                   </router-link>
                 </div>
                 <!-- End:Menu Item -->
                 <!-- Begin:Menu Item -->
                 <div class="menu-item px-3">
-                  <a href="#" class="menu-link px-3" @click="deleteCustomer(customer.id)">Delete</a>
+                  <a href="#" class="menu-link px-3" @click="deleteLanguage(language.id)">Delete</a>
                 </div>
                 <!-- End:Menu Item -->
               </div>
@@ -169,95 +172,73 @@
 
 <script>
 import Toolbar from "@/components/admin/dashboard/toolbar.vue"
-import AddUserModal from "@/components/admin/modals/forms/add-user-modal.vue"
-import {defineComponent, onMounted, ref} from "vue"
+import AddLanguageModal from "@/components/admin/modals/forms/add-language-modal.vue"
+import arraySort from "array-sort"
+import {computed, defineComponent, onBeforeMount, onMounted, ref} from "vue"
+import {useStore} from "vuex"
 import DataTable from "../../components/admin/data-table/index.vue"
+import axiosClient from "../../plugins/axios"
 
 export default defineComponent({
-  name: "users-list",
-  components: {Toolbar, AddUserModal, DataTable},
+  name: "languages-list",
+  components: {Toolbar, AddLanguageModal, DataTable},
   setup() {
     const tableHeader = ref([
       {
-        columnName: "Customer Name",
+        columnName: "Language Name",
         columnLabel: "name",
-        sortEnabled: true,
-        columnWidth: 175
-      },
-      {
-        columnName: "Email",
-        columnLabel: "email",
         sortEnabled: true,
         columnWidth: 230
       },
       {
-        columnName: "Company",
-        columnLabel: "company",
+        columnName: "Short Name",
+        columnLabel: "shortname",
         sortEnabled: true,
         columnWidth: 175
       },
       {
-        columnName: "Payment Method",
-        columnLabel: "paymentMethod",
+        columnName: "Direction",
+        columnLabel: "direction",
         sortEnabled: true,
         columnWidth: 175
       },
       {
-        columnName: "Created Date",
-        columnLabel: "date",
+        columnName: "Direction Word",
+        columnLabel: "dirword",
         sortEnabled: true,
-        columnWidth: 225
+        columnWidth: 175
+      },
+      {
+        columnName: "Icon",
+        columnLabel: "icon",
+        sortEnabled: true,
+        columnWidth: 175
       },
       {
         columnName: "Actions",
         columnLabel: "actions",
         sortEnabled: true,
-        columnWidth: 135
+        columnWidth: 175
       }
     ])
 
-    const tableData = ref([
-      {
-        id: Math.floor(Math.random() * 99999) + 1,
-        name: "Dan Wilson",
-        email: "dam@consulting.com",
-        company: "Trinity Studio",
-        payment: {
-          icon: "media/svg/card-logos/visa.svg",
-          ccnumber: `**** ${Math.floor(Math.random() * (9999 - 1000 + 1) + 1000)}`,
-          label: "visa"
-        },
-        date: "18 Aug 2020. 3:34 PM"
-      },
-      {
-        id: Math.floor(Math.random() * 99999) + 1,
-        name: "Dan Wilson",
-        email: "dam@consulting.com",
-        company: "Trinity Studio",
-        payment: {
-          icon: "media/svg/card-logos/visa.svg",
-          ccnumber: `**** ${Math.floor(Math.random() * (9999 - 1000 + 1) + 1000)}`,
-          label: "visa"
-        },
-        date: "18 Aug 2020. 3:34 PM"
-      }
-    ])
+    const store = useStore()
+    onBeforeMount(() => store.dispatch("getAPILanguages"))
 
-    const initCustomers = ref([])
+    const tableData = computed(() => store.state.languages)
+    const initLanguages = ref([])
     const selectedIds = ref([])
     const search = ref(null)
 
-    const deleteCustomer = function deleteCustomer() {
-      for (let index = 0; index < tableData.value.length; index += 1) {
-        if (tableData.value[index].id === id) {
-          tableData.value.splice(index, 1)
-        }
-      }
+    const deleteLanguage = function deleteLanguage(id) {
+      axiosClient.delete(`/languages/delete/${id}`).then(() => {
+        store.dispatch("getAPILanguages")
+      })
     }
 
-    const deleteFewCustomers = function deleteFewCustomers() {
+    const deleteFewLanguages = function deleteFewLanguages() {
       selectedIds.value.forEach((item) => {
-        deleteCustomer(item)
+        deleteLanguage(item)
       })
 
       selectedIds.value.length = 0
@@ -274,7 +255,7 @@ export default defineComponent({
     }
 
     const searchItems = () => {
-      tableData.value.splice(0, tableData.value.length, ...initCustomers.value)
+      tableData.value.splice(0, tableData.value.length, ...initLanguages.value)
       if (search.value !== "") {
         const results = []
         for (let column = 0; column < tableData.value.length; column += 1) {
@@ -297,7 +278,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      initCustomers.value.splice(0, tableData.value.length, ...tableData.value)
+      initLanguages.value.splice(0, tableData.value.length, ...tableData.value)
     })
 
     return {
@@ -306,8 +287,8 @@ export default defineComponent({
       selectedIds,
       search,
       onItemsSelect,
-      deleteCustomer,
-      deleteFewCustomers,
+      deleteLanguage,
+      deleteFewLanguages,
       searchItems,
       onSort
     }
