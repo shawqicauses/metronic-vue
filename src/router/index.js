@@ -1,12 +1,13 @@
 import {createRouter, createWebHistory} from "vue-router"
-import AuthLayout from "../components/layouts/admin/auth.vue"
-import DashboardLayout from "../components/layouts/admin/dashboard.vue"
-import i18n, {getI18nLanguages} from "../plugins/i18n"
-import store from "../store"
-import SignIn from "../views/admin/sign-in.vue"
-import SignUp from "../views/admin/sign-up.vue"
-import AddLanguages from "../views/languages/add.vue"
-import LanguagesList from "../views/languages/list.vue"
+import AuthLayout from "@/components/layouts/admin/auth.vue"
+import DashboardLayout from "@/components/layouts/admin/dashboard.vue"
+import i18n, {getI18nLanguages} from "@/plugins/i18n"
+import store from "@/store"
+import SignIn from "@/views/admin/sign-in.vue"
+import SignUp from "@/views/admin/sign-up.vue"
+import LanguagesList from "@/views/admin/languages/list.vue"
+import LabelsList from "@/views/admin/labels/list.vue"
+import TranslationsList from "@/views/admin/translations/list.vue"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -29,9 +30,14 @@ const router = createRouter({
           component: LanguagesList
         },
         {
-          path: "/dashboard/languages/create",
-          name: "add-languages",
-          component: AddLanguages
+          path: "/dashboard/labels/index",
+          name: "labels-list",
+          component: LabelsList
+        },
+        {
+          path: "/dashboard/translations/index",
+          name: "translations-list",
+          component: TranslationsList
         }
       ]
     },

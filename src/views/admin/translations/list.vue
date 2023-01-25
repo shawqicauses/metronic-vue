@@ -1,9 +1,46 @@
 <template>
   <!-- Begin:Toolbar -->
-  <toolbar title="Languages Management" />
+  <toolbar title="Translations Management" />
   <!-- End:Toolbar -->
+
   <!-- Begin:Content -->
-  <div id="kt_app_content" class="app-content flex-column-fluid">
+  <div v-if="tableFooter.total == 0" id="kt_app_content" class="app-content flex-column-fluid">
+    <!-- Begin:Content Container -->
+    <div id="kt_app_content_container" class="app-container container-xxl">
+      <!-- Begin:Card -->
+      <div class="card">
+        <div class="card-body p-0">
+          <div class="card-px text-center py-20 my-10">
+            <h2 class="fs-2x fw-bold mb-10">Welcome!</h2>
+            <p class="text-gray-400 fs-5 fw-semibold mb-13">
+              <span>
+                There are no translations added yet.
+                <br />
+                Kickstart your CRM by adding a your first translation
+              </span>
+            </p>
+            <button
+              type="button"
+              data-bs-target="#kt_modal_add_translation"
+              data-bs-toggle="modal"
+              class="btn btn-primary er fs-6 px-8 py-4">
+              Add Translation
+            </button>
+          </div>
+          <div class="text-center px-5">
+            <img
+              src="@/assets/media/illustrations/01.png"
+              alt="Add Translations Illustration"
+              class="mw-100 mh-300px" />
+          </div>
+        </div>
+      </div>
+      <!-- End:Card -->
+    </div>
+    <!-- End:Content Container -->
+  </div>
+
+  <div v-else id="kt_app_content" class="app-content flex-column-fluid">
     <!-- Begin:Content Container -->
     <div id="kt_app_content_container" class="app-container container-xxl">
       <!-- Begin:Card -->
@@ -37,12 +74,12 @@
                 </svg>
               </span>
               <!-- End:SVG Icon -->
-              <label for="search-languages" class="sr-only">Search Languages</label>
+              <label for="search-translations" class="sr-only">Search Translations</label>
               <input
-                id="search-languages"
+                id="search-translations"
                 type="text"
-                placeholder="Search Languages"
-                data-kt-language-table-filter="search"
+                placeholder="Search Translations"
+                data-kt-translation-table-filter="search"
                 class="form-control form-control-solid w-250px ps-14" />
             </div>
             <!-- End:Search -->
@@ -51,11 +88,11 @@
           <!-- Begin:Card Toolbar -->
           <div class="card-toolbar">
             <!-- Begin:Toolbar -->
-            <div data-kt-language-table-toolbar="base" class="d-flex justify-content-end">
-              <!-- Begin:Add Language -->
+            <div data-kt-translation-table-toolbar="base" class="d-flex justify-content-end">
+              <!-- Begin:Add Translation -->
               <button
                 type="button"
-                data-bs-target="#kt_modal_add_language"
+                data-bs-target="#kt_modal_add_translation"
                 data-bs-toggle="modal"
                 class="btn btn-primary">
                 <!-- Begin:SVG Icon -->
@@ -79,13 +116,13 @@
                   </svg>
                 </span>
                 <!-- End:SVG Icon -->
-                Add Language
+                Add Translation
               </button>
-              <!-- End:Add Language -->
+              <!-- End:Add Translation -->
             </div>
             <!-- End:Toolbar -->
             <!-- Begin:Modal -->
-            <add-language-modal />
+            <add-translation-modal />
             <!-- End:Modal -->
           </div>
           <!-- End:Card Toolbar -->
@@ -95,31 +132,35 @@
         <div class="card-body py-4">
           <data-table
             :data="tableData"
+            :footer="tableFooter"
             :header="tableHeader"
             :checkbox-enabled="true"
             :checkbox-label="id"
             :items-per-page-dropdown-enabled="true"
             @on-sort="onSort"
             @on-items-select="onItemsSelect">
-            <template #name="{row: language}">
-              {{ language.name.charAt(0).toUpperCase() + language.name.slice(1) }}
+            <template #main="{row: translation}">
+              <span class="form-check form-check-custom form-check-solid">
+                <input
+                  class="form-check-input"
+                  type="radio"
+                  :checked="translation.main == 1 ? 'checked' : 'false'"
+                  name="main"
+                  @click="setMainLang(translation.id)"
+                  value="1" />
+              </span>
             </template>
-            <template #shortname="{row: language}">
-              {{ language.shortname.toUpperCase() }}
+            <template #title="{row: translation}">
+              {{ translation.title }}
             </template>
-            <template #direction="{row: language}">
-              {{ language.direction.toUpperCase() }}
+            <template #label="{row: translation}">
+              {{ translation.label.name }}
             </template>
-            <template #dirword="{row: language}">
-              {{ language.dirword.charAt(0).toUpperCase() + language.dirword.slice(1) }}
+            <template #language="{row: translation}">
+              {{ translation.language.name }}
             </template>
-            <template #icon="{row: language}">
-              <img
-                :src="`../../../src/assets/media/flags/${language.icon}`"
-                :alt="`${language.icon}`"
-                class="w-20px h-20px rounded-1 ms-2" />
-            </template>
-            <template #actions="{row: language}">
+
+            <template #actions="{row: translation}">
               <a
                 href="#"
                 class="btn btn-sm btn-light btn-active-light-primary"
@@ -146,14 +187,16 @@
                 class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4">
                 <!-- Begin:Menu Item -->
                 <div class="menu-item px-3">
-                  <router-link to="/dashboard/languages/list" class="menu-link px-3">
+                  <router-link to="/dashboard/translations/list" class="menu-link px-3">
                     View
                   </router-link>
                 </div>
                 <!-- End:Menu Item -->
                 <!-- Begin:Menu Item -->
                 <div class="menu-item px-3">
-                  <a href="#" class="menu-link px-3" @click="deleteLanguage(language.id)">Delete</a>
+                  <a href="#" class="menu-link px-3" @click="deleteTranslation(translation.id)"
+                    >Delete</a
+                  >
                 </div>
                 <!-- End:Menu Item -->
               </div>
@@ -172,45 +215,33 @@
 
 <script>
 import Toolbar from "@/components/admin/dashboard/toolbar.vue"
-import AddLanguageModal from "@/components/admin/modals/forms/add-language-modal.vue"
+import AddTranslationModal from "@/components/admin/modals/forms/add-translation-modal.vue"
 import arraySort from "array-sort"
-import {computed, defineComponent, onBeforeMount, onMounted, ref} from "vue"
+import {computed, defineComponent, provide, onBeforeMount, onMounted, ref} from "vue"
 import {useStore} from "vuex"
-import DataTable from "../../components/admin/data-table/index.vue"
-import axiosClient from "../../plugins/axios"
+import DataTable from "@/components/admin/data-table/index.vue"
+import axiosClient from "@/plugins/axios"
 
 export default defineComponent({
-  name: "languages-list",
-  components: {Toolbar, AddLanguageModal, DataTable},
+  name: "translations-list",
+  components: {Toolbar, AddTranslationModal, DataTable},
   setup() {
     const tableHeader = ref([
       {
-        columnName: "Language Name",
-        columnLabel: "name",
+        columnName: "Translation Title",
+        columnLabel: "title",
         sortEnabled: true,
         columnWidth: 230
       },
       {
-        columnName: "Short Name",
-        columnLabel: "shortname",
+        columnName: "Label Name",
+        columnLabel: "label",
         sortEnabled: true,
         columnWidth: 175
       },
       {
-        columnName: "Direction",
-        columnLabel: "direction",
-        sortEnabled: true,
-        columnWidth: 175
-      },
-      {
-        columnName: "Direction Word",
-        columnLabel: "dirword",
-        sortEnabled: true,
-        columnWidth: 175
-      },
-      {
-        columnName: "Icon",
-        columnLabel: "icon",
+        columnName: "Language Name",
+        columnLabel: "language",
         sortEnabled: true,
         columnWidth: 175
       },
@@ -223,22 +254,50 @@ export default defineComponent({
     ])
 
     const store = useStore()
-    onBeforeMount(() => store.dispatch("getAPILanguages"))
 
-    const tableData = computed(() => store.state.languages)
-    const initLanguages = ref([])
-    const selectedIds = ref([])
-    const search = ref(null)
+    onBeforeMount(() => {
+      tableData.value = []
+      tableFooter.value = {total: 0}
+      getRows()
+    })
 
-    const deleteLanguage = function deleteLanguage(id) {
-      axiosClient.delete(`/languages/delete/${id}`).then(() => {
-        store.dispatch("getAPILanguages")
+    const tableData = ref()
+    const tableFooter = ref()
+
+    function getRows(queryString = "") {
+      axiosClient.get(`/translations${queryString}`).then((response) => {
+        //console.log(response.data)
+        tableData.value = response.data.result.data
+        tableFooter.value = response.data.result
+        tableFooter.value.data = "translations"
+        //console.log(tableData.value.length)
+        //console.log("page>>>>>>>>>>>>>>>>>>" + page)
+        console.log("tableFooter>>>>>>>>>>>>>>>>>>")
+        console.log(tableFooter.value)
       })
     }
 
-    const deleteFewLanguages = function deleteFewLanguages() {
+    provide("getRows", getRows)
+
+    const initTranslations = ref([])
+    const selectedIds = ref([])
+    const search = ref(null)
+
+    const deleteTranslation = function deleteTranslation(id) {
+      axiosClient.delete(`/translations/delete/${id}`).then(() => {
+        store.dispatch("getAPITranslations")
+      })
+    }
+
+    const setMainLang = function setMainLang(id) {
+      axiosClient.get(`/translations/main/${id}`).then(() => {
+        store.dispatch("getAPITranslations")
+      })
+    }
+
+    const deleteFewTranslations = function deleteFewTranslations() {
       selectedIds.value.forEach((item) => {
-        deleteLanguage(item)
+        deleteTranslation(item)
       })
 
       selectedIds.value.length = 0
@@ -255,7 +314,7 @@ export default defineComponent({
     }
 
     const searchItems = () => {
-      tableData.value.splice(0, tableData.value.length, ...initLanguages.value)
+      tableData.value.splice(0, tableData.value.length, ...initTranslations.value)
       if (search.value !== "") {
         const results = []
         for (let column = 0; column < tableData.value.length; column += 1) {
@@ -278,17 +337,19 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      initLanguages.value.splice(0, tableData.value.length, ...tableData.value)
+      initTranslations.value.splice(0, tableData.value.length, ...tableData.value)
     })
 
     return {
       tableHeader,
       tableData,
+      tableFooter,
       selectedIds,
       search,
       onItemsSelect,
-      deleteLanguage,
-      deleteFewLanguages,
+      setMainLang,
+      deleteTranslation,
+      deleteFewTranslations,
       searchItems,
       onSort
     }

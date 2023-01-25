@@ -2,6 +2,7 @@
   <div>
     <data-table-content
       :header="header"
+      :footer="footer"
       :data="dataToDisplay"
       :checkbox-enabled="checkboxEnabled"
       :checkbox-label="checkboxLabel"
@@ -19,6 +20,7 @@
       v-model:itemsPerPage="itemsInTable"
       :items-per-page-dropdown-enabled="itemsPerPageDropdownEnabled"
       :count="totalItems"
+      :footerData="footerData"
       @page-change="pageChange" />
   </div>
 </template>
@@ -33,6 +35,7 @@ export default defineComponent({
   components: {DataTableContent, DataTableFooter},
   props: {
     header: {type: Array, required: true},
+    footer: {type: Object, required: true},
     data: {type: Array, required: true},
     checkboxEnabled: {type: Boolean, required: false, default: false},
     checkboxLabel: {type: String, required: false, default: "id"},
@@ -48,6 +51,10 @@ export default defineComponent({
   setup(props, {emit}) {
     const currentPage = ref(1)
     const itemsInTable = ref(props.itemsPerPage)
+    const footerData = ref(props.footer)
+
+    //console.log("footer>>>>>>>>>>>>>>>>>>")
+    console.log(props.footer)
 
     watch(
       () => itemsInTable.value,
@@ -68,6 +75,7 @@ export default defineComponent({
     })
 
     const totalItems = computed(() => {
+      return props.footer.total
       if (props.data) {
         if (props.data.length <= itemsInTable.value) return props.total
         return props.data.length
@@ -93,6 +101,7 @@ export default defineComponent({
       dataToDisplay,
       totalItems,
       itemsInTable,
+      footerData,
       onItemsSelect,
       onSort,
       pageChange

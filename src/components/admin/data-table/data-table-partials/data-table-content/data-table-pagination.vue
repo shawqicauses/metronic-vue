@@ -120,7 +120,7 @@
 </template>
 
 <script>
-import {computed, defineComponent} from "vue"
+import {computed, defineComponent, onMounted, ref, inject} from "vue"
 
 export default defineComponent({
   name: "data-table-pagination",
@@ -129,10 +129,13 @@ export default defineComponent({
     totalPages: {type: Number, required: true},
     currentPage: {type: Number, required: true},
     perPage: {type: Number, required: true},
+    paginationInfo: {type: Object, required: true},
     maxVisibleButtons: {type: Number, required: false, default: 5}
   },
   emits: ["page-change"],
   setup(props, {emit}) {
+    const paginationData = ref(props.paginationInfo)
+
     const startPage = computed(() => {
       if (
         props.totalPages < props.maxVisibleButtons ||
@@ -149,6 +152,8 @@ export default defineComponent({
 
       return props.currentPage - 2
     })
+
+    const getRows = inject("getRows")
 
     const endPage = computed(() => {
       return Math.min(startPage.value + props.maxVisibleButtons - 1, props.totalPages)
@@ -175,28 +180,38 @@ export default defineComponent({
     })
 
     const onClickFirstPage = function onClickFirstPage() {
+      getRows("?page=" + 1)
       emit("page-change", 1)
     }
 
     const onClickPreviousPage = function onClickPreviousPage() {
+      getRows("?page=" + (props.currentPage - 1))
       emit("page-change", props.currentPage - 1)
     }
 
     const onClickPage = function onClickPage(page) {
+      getRows("?page=" + page)
       emit("page-change", page)
     }
 
     const onClickNextPage = function onClickNextPage() {
+      getRows("?page=" + (props.currentPage + 1))
       emit("page-change", props.currentPage + 1)
     }
 
     const onClickLastPage = function onClickLastPage() {
+      getRows("?page=" + props.totalPages)
       emit("page-change", props.totalPages)
     }
 
     const isPageActive = function isPageActive(page) {
+      console.log("currentPage>>>" + props.currentPage + "===" + page)
       return props.currentPage === page
     }
+
+    onMounted(() => {
+      console.log(inject("getRows"))
+    })
 
     return {
       startPage,
