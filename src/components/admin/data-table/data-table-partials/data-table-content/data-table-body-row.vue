@@ -1,3 +1,4 @@
+<!-- Done Reviewing: 29/01/2023 -->
 <template>
   <tbody class="fw-semibold text-gray-600">
     <template v-for="(row, index) in data" :key="index">
@@ -7,11 +8,11 @@
             <label :for="`${row[checkboxLabel]}-checkbox`" class="sr-only">Checkbox</label>
             <input
               :id="`${row[checkboxLabel]}-checkbox`"
-              v-model="selectedItems"
+              v-model="dataTableItemsSelected"
               type="checkbox"
               :value="row[checkboxLabel]"
               class="form-check-input"
-              @change="onChange" />
+              @change="onCheckboxChange" />
           </div>
         </td>
         <template v-for="(properties, column) in header" :key="column">
@@ -27,7 +28,7 @@
 </template>
 
 <script>
-import {defineComponent, ref, watch} from "vue"
+import {defineComponent, onMounted, ref, watch} from "vue"
 
 export default defineComponent({
   name: "data-table-body-row",
@@ -36,30 +37,31 @@ export default defineComponent({
     data: {type: Array, required: true},
     checkboxEnabled: {type: Boolean, required: false, default: true},
     checkboxLabel: {type: String, required: false, default: "id"},
-    currentlySelectedItems: {type: Array, required: false, default: () => []}
+    itemsSelectedCurrent: {type: Array, required: false, default: () => []}
   },
-  emits: ["on-select"],
+  emits: ["on-items-body-select"],
   setup(props, {emit}) {
-    const selectedItems = ref([])
-
+    const dataTableItemsSelected = ref([])
     watch(
-      () => [...props.currentlySelectedItems],
-      (currentValue) => {
-        if (props.currentlySelectedItems.length !== 0) {
-          selectedItems.value = [...new Set([...selectedItems.value, ...currentValue])]
-        } else {
-          selectedItems.value = []
-        }
+      () => [...props.itemsSelectedCurrent],
+      (value) => {
+        if (props.itemsSelectedCurrent.length !== 0)
+          dataTableItemsSelected.value = [...new Set([...dataTableItemsSelected.value, ...value])]
+        else dataTableItemsSelected.value = []
       }
     )
 
-    const onChange = function onChange() {
-      emit("on-select", selectedItems.value)
+    const onCheckboxChange = function onCheckboxChange() {
+      emit("on-items-body-select", dataTableItemsSelected.value)
     }
 
+    onMounted(() => {
+      KTMenu.init()
+    })
+
     return {
-      selectedItems,
-      onChange
+      dataTableItemsSelected,
+      onCheckboxChange
     }
   }
 })

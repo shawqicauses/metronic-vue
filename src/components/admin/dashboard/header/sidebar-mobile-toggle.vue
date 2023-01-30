@@ -3,7 +3,6 @@
     <div
       id="kt_app_sidebar_mobile_toggle"
       class="btn btn-icon btn-active-color-primary w-35px h-35px">
-      <!-- Begin:SVG Icon -->
       <span class="svg-icon svg-icon-2 svg-icon-md-1">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -17,10 +16,9 @@
           <path
             d="M21 14H3C2.4 14 2 13.6 2 13V11C2 10.4 2.4 10 3 10H21C21.6 10 22 10.4 22 11V13C22 13.6 21.6 14 21 14ZM22 20V18C22 17.4 21.6 17 21 17H3C2.4 17 2 17.4 2 18V20C2 20.6 2.4 21 3 21H21C21.6 21 22 20.6 22 20Z"
             fill="currentColor"
-            opacity="0.4" />
+            opacity="0.5" />
         </svg>
       </span>
-      <!-- End:SVG Icon -->
     </div>
   </div>
 </template>

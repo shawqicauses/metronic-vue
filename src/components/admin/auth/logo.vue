@@ -1,5 +1,6 @@
+<!-- Done Reviewing: 29/01/2023 -->
 <template>
-  <a href="/" class="d-block mx-auto py-20 d-lg-none">5-PAL Company</a>
+  <router-link to="/" class="d-block mx-auto py-20 d-lg-none">5-PAL Company</router-link>
 </template>
 
 <script>

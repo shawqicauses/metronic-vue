@@ -1,3 +1,4 @@
+<!-- Done Reviewing: 30/01/2023 -->
 <template>
   <div class="menu-item px-3" @click="setLanguage" @keypress="setLanguage">
     <a :href="link" :data-kt-lang="name" class="menu-link d-flex px-5">

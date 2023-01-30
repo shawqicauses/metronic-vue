@@ -1,17 +1,10 @@
+<!-- Done Reviewing: 30/01/2023 -->
 <template>
-  <!-- Begin:Header -->
   <sign-up-header />
-  <!-- End:Header -->
-  <!-- Begin:Body -->
   <div class="py-20">
-    <!-- Begin:Form -->
     <sign-up-form />
-    <!-- End:Form -->
   </div>
-  <!-- End:Body -->
-  <!-- Begin:Footer -->
   <form-footer />
-  <!-- End:Footer -->
 </template>
 
 <script>

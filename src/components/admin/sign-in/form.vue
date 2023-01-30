@@ -1,3 +1,4 @@
+<!-- Done Reviewing: 30/01/2023 -->
 <template>
   <form
     id="kt_sign_in_form"
@@ -6,21 +7,12 @@
     novalidate="false"
     class="form w-100"
     @submit.prevent="handleFormSubmission">
-    <!-- Begin:Body -->
     <div class="card-body">
-      <!-- Begin:Heading -->
       <div class="text-start mb-10">
-        <!-- Begin:Title -->
         <h1 class="text-dark mb-3 fs-3x">Sign In</h1>
-        <!-- End:Title -->
-        <!-- Begin:Text -->
         <div class="text-gray-400 fw-semibold fs-6">Get un-limited access and earn money</div>
-        <!-- End:Text -->
       </div>
-      <!-- End:Heading -->
-      <!-- Begin:Input Group -->
       <div class="fv-row mb-8">
-        <!-- Begin:Email -->
         <form-input
           id="email"
           v-model:formInputValue="user.email"
@@ -29,10 +21,7 @@
           name="email"
           placeholder="Email"
           autocomplete="off" />
-        <!-- End:Email -->
       </div>
-      <!-- End:Input Group -->
-      <!-- Begin:Input Group -->
       <div class="fv-row mb-7">
         <form-input
           id="password"
@@ -44,20 +33,12 @@
           placeholder="Password"
           autocomplete="off" />
       </div>
-      <!-- End:Input Group -->
-      <!-- Begin:Wrapper -->
       <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-10">
         <div></div>
-        <!-- Begin:Link -->
         <a href="#" class="link-primary">Forgot Password?</a>
-        <!-- End:Link -->
       </div>
-      <!-- End:Wrapper -->
-      <!-- Begin:Actions -->
       <form-actions ref="formButton" button-id="kt_sign_in_submit" />
-      <!-- End:Actions -->
     </div>
-    <!-- End:Body -->
   </form>
 </template>
 
@@ -78,9 +59,7 @@ export default defineComponent({
     const elements = {form: ref(null), formButton: ref(null), formError: ref(null)}
     let validator
 
-    // Handle Form Validation
     const handleFormValidation = function handleFormValidation() {
-      // Init Form Validator Rules
       validator = FormValidation.formValidation(elements.form.value, {
         fields: {
           email: {
@@ -88,7 +67,7 @@ export default defineComponent({
               notEmpty: {message: "Email is required"},
               regexp: {
                 regexp: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "The entered value is not a valid email address"
+                message: "The entered email is not a valid email address"
               }
             }
           },
@@ -113,20 +92,16 @@ export default defineComponent({
       })
     }
 
-    // Handle Form Submission
     const handleFormSubmission = function handleFormSubmission() {
       validator.validate().then((status) => {
         if (status.toLowerCase() === "valid") {
-          // Show Loading Indication
           elements.formButton.value.formButton.setAttribute("data-kt-indicator", "on")
-          // Disable Button (Avoid Multiple Click)
           elements.formButton.value.formButton.disable = true
           elements.formButton.value.formButton.ariaDisabled = true
 
           store
             .dispatch("signIn", user)
-            .then((response) => {
-              // Show Message Pop-Up
+            .then(() => {
               Swal.fire({
                 icon: "success",
                 text: "You have successfully signed in!",
@@ -144,7 +119,6 @@ export default defineComponent({
                 elements.formError.value = error.response.data.message
               else elements.formError.value = error.response.data.error
 
-              // Show Error Pop-Up
               Swal.fire({
                 icon: "error",
                 text: elements.formError.value,
@@ -154,14 +128,11 @@ export default defineComponent({
               })
             })
             .finally(() => {
-              // Hide Loading Indication
               elements.formButton.value.formButton.removeAttribute("data-kt-indicator")
-              // Enable Button
               elements.formButton.value.formButton.disabled = false
               elements.formButton.value.formButton.ariaDisabled = false
             })
         } else {
-          // Show Error Pop-Up
           Swal.fire({
             icon: "error",
             text: "Sorry. Looks like there are some errors detected. Please try again.",

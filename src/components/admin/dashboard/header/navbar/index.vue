@@ -1,8 +1,7 @@
+<!-- Done Reviewing: 29/01/2023 -->
 <template>
   <div class="app-navbar flex-shrink-0">
-    <!-- Begin:User Menu -->
     <navbar-user-menu />
-    <!-- End:User Menu -->
   </div>
 </template>
 

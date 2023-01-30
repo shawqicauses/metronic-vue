@@ -1,3 +1,4 @@
+// Done Reviewing: 30/01/2023
 import {shallowRef} from "vue"
 import {createStore} from "vuex"
 import GroupIcon from "../components/admin/icons/communication/group-icon.vue"
@@ -36,8 +37,8 @@ const store = createStore({
       else {
         const languages = Object.keys(state.languages).map((key) => state.languages[key].shortname)
         const language = languages.find((languagesItem) =>
-          data.find((dataItem) =>
-            dataItem.split(new RegExp(languagesItem, "gi")).length - 1 > 0 ? languagesItem : null
+          data.find((item) =>
+            item.split(new RegExp(languagesItem, "gi")).length - 1 > 0 ? languagesItem : null
           )
         )
 
@@ -54,7 +55,6 @@ const store = createStore({
       return axiosClient.get("/navigation").then((response) => {
         response.data.forEach((item) => {
           const [name] = item.icon.split("/")[1].split(".")
-          // eslint-disable-next-line
           item.icon = icons[name.toLowerCase()]
         })
 

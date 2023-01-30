@@ -1,27 +1,28 @@
+<!-- Done Reviewing: 29/01/2023 -->
 <template>
   <div>
     <data-table-content
       :header="header"
-      :footer="footer"
-      :data="dataToDisplay"
+      :data="dataTableDataCurrent"
       :checkbox-enabled="checkboxEnabled"
       :checkbox-label="checkboxLabel"
       :sort-label="sortLabel"
       :sort-order="sortOrder"
-      :empty-table-text="emptyTableText"
+      :data-table-empty-text="dataTableEmptyText"
       :loading="loading"
-      @on-items-select="onItemsSelect"
-      @on-sort="onSort">
+      @on-sort="onSort"
+      @on-items-select="onItemsSelect">
       <template v-for="(slot, name) in $slots" #[name]="{row: item}">
         <slot :name="name" :row="item" />
       </template>
     </data-table-content>
     <data-table-footer
-      v-model:itemsPerPage="itemsInTable"
+      v-model:itemsPerPage="dataTableItemsPerPage"
+      :items-total="dataTableItemsTotal"
+      :items-per-page="dataTableItemsPerPage"
       :items-per-page-dropdown-enabled="itemsPerPageDropdownEnabled"
-      :count="totalItems"
-      :footerData="footerData"
-      @page-change="pageChange" />
+      :page-current="dataTablePageCurrent"
+      @on-page-change="onPageChange" />
   </div>
 </template>
 
@@ -35,76 +36,71 @@ export default defineComponent({
   components: {DataTableContent, DataTableFooter},
   props: {
     header: {type: Array, required: true},
-    footer: {type: Object, required: true},
     data: {type: Array, required: true},
     checkboxEnabled: {type: Boolean, required: false, default: false},
     checkboxLabel: {type: String, required: false, default: "id"},
-    total: {type: Number, required: false, default: 0},
-    itemsPerPage: {type: Number, default: 10},
-    itemsPerPageDropdownEnabled: {type: Boolean, required: true, default: true},
+    itemsTotal: {type: Number, required: false, default: 0},
+    itemsPerPage: {type: Number, required: false, default: 10},
+    itemsPerPageDropdownEnabled: {type: Boolean, required: false, default: true},
     sortLabel: {type: String, required: false, default: null},
     sortOrder: {type: String, required: false, default: "ASC"},
-    emptyTableText: {type: String, required: false, default: "No Data Found"},
+    dataTableEmptyText: {type: String, required: false, default: "The Table Is Empty"},
     loading: {type: Boolean, required: false, default: false}
   },
-  emits: ["on-items-select", "on-items-per-page-change", "on-sort", "page-change"],
+  emits: ["on-items-per-page-change", "on-sort", "on-items-select", "on-page-change"],
   setup(props, {emit}) {
-    const currentPage = ref(1)
-    const itemsInTable = ref(props.itemsPerPage)
-    const footerData = ref(props.footer)
-
-    //console.log("footer>>>>>>>>>>>>>>>>>>")
-    console.log(props.footer)
+    const dataTableItemsPerPage = ref(props.itemsPerPage)
+    const dataTablePageCurrent = ref(1)
 
     watch(
-      () => itemsInTable.value,
+      () => dataTableItemsPerPage.value,
       (value) => {
-        currentPage.value = 1
+        dataTablePageCurrent.value = 1
         emit("on-items-per-page-change", value)
       }
     )
 
-    const dataToDisplay = computed(() => {
+    const dataTableItemsTotal = computed(() => {
+      if (props.itemsTotal) return props.itemsTotal
       if (props.data) {
-        if (props.data.length <= itemsInTable.value) return props.data
-        const sliceFrom = (currentPage.value - 1) * itemsInTable.value
-        return props.data.slice(sliceFrom, sliceFrom + itemsInTable.value)
-      }
-
-      return []
-    })
-
-    const totalItems = computed(() => {
-      return props.footer.total
-      if (props.data) {
-        if (props.data.length <= itemsInTable.value) return props.total
+        if (props.data.length <= dataTableItemsPerPage.value) return props.itemsTotal
         return props.data.length
       }
 
       return 0
     })
 
-    const onItemsSelect = function onItemsSelect(itemsSelected) {
-      emit("on-items-select", itemsSelected)
-    }
+    const dataTableDataCurrent = computed(() => {
+      if (props.data) {
+        if (props.data.length <= dataTableItemsPerPage.value) return props.data
+        const sliceFrom = (dataTablePageCurrent.value - 1) * dataTableItemsPerPage.value
+        return props.data.slice(sliceFrom, sliceFrom + dataTableItemsPerPage.value)
+      }
+
+      return []
+    })
 
     const onSort = function onSort(sort) {
       emit("on-sort", sort)
     }
 
-    const pageChange = function pageChange(page) {
-      currentPage.value = page
-      emit("page-change", page)
+    const onItemsSelect = function onItemsSelect(itemsSelected) {
+      emit("on-items-select", itemsSelected)
+    }
+
+    const onPageChange = function onPageChange(page) {
+      dataTablePageCurrent.value = page
+      emit("on-page-change", page)
     }
 
     return {
-      dataToDisplay,
-      totalItems,
-      itemsInTable,
-      footerData,
-      onItemsSelect,
+      dataTableItemsTotal,
+      dataTableItemsPerPage,
+      dataTableDataCurrent,
+      dataTablePageCurrent,
       onSort,
-      pageChange
+      onItemsSelect,
+      onPageChange
     }
   }
 })

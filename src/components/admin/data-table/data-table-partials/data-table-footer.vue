@@ -1,17 +1,17 @@
+<!-- Done Reviewing: 29/01/2023 -->
 <template>
   <div class="row">
     <data-table-items-per-page-select
-      v-model:itemsPerPage="itemsCountInTable"
-      :current-page="page"
-      :items-per-page-dropdown-enabled="itemsPerPageDropdownEnabled" />
+      v-model:itemsPerPage="dataTableItemsPerPage"
+      :items-per-page-dropdown-enabled="itemsPerPageDropdownEnabled"
+      :page-current="dataTablePageCurrent" />
     <data-table-pagination
-      v-if="pageCount > 1"
-      :total="count"
-      :total-pages="pageCount"
-      :current-page="page"
-      :per-page="itemsPerPage"
-      :paginationInfo="paginationData"
-      @page-change="pageChange" />
+      v-if="dataTablePagesTotal > 1"
+      :items-total="itemsTotal"
+      :items-per-page="itemsPerPage"
+      :page-total="dataTablePagesTotal"
+      :page-current="dataTablePageCurrent"
+      @on-page-change="onPageChange" />
   </div>
 </template>
 
@@ -24,65 +24,58 @@ export default defineComponent({
   name: "data-table-footer",
   components: {DataTableItemsPerPageSelect, DataTablePagination},
   props: {
-    count: {type: Number, required: false, default: 5},
-    itemsPerPage: {type: Number, default: 5},
-    footerData: {type: Object, required: true},
-    itemsPerPageDropdownEnabled: {type: Boolean, required: false, default: true}
+    itemsTotal: {type: Number, required: false, default: 10},
+    itemsPerPage: {type: Number, required: false, default: 10},
+    itemsPerPageDropdownEnabled: {type: Boolean, required: false, default: true},
+    pageCurrent: {type: Number, required: false, default: 1}
   },
-  emits: ["update:itemsPerPage", "page-change"],
+  emits: ["update:itemsPerPage", "on-page-change"],
   setup(props, {emit}) {
-    const page = ref(props.footerData.current_page)
-    const inputItemsPerPage = ref(props.footerData.per_page)
-    const paginationData = ref(props.footerData)
-
-    console.log("count>>>>>>>>>>>>>>>>>>>" + props.count)
-    //console.log("footerData>>>>>>>>>>>>>>>>>>>")
-    //console.log(props.footerData)
+    const dataTableItemsPerPageInput = ref(props.itemsPerPage)
+    const dataTablePageCurrent = ref(props.pageCurrent)
 
     watch(
-      () => props.count,
+      () => props.itemsTotal,
       () => {
-        page.value = 1
+        dataTablePageCurrent.value = 1
       }
     )
 
     watch(
-      () => inputItemsPerPage.value,
+      () => dataTableItemsPerPageInput.value,
       () => {
-        page.value = 1
+        dataTablePageCurrent.value = 1
       }
     )
 
-    const pageChange = function pageChange(newPage) {
-      page.value = newPage
-      emit("page-change", page.value)
-    }
-
-    const itemsCountInTable = computed({
+    const dataTableItemsPerPage = computed({
       get() {
         return props.itemsPerPage
       },
       set(value) {
-        inputItemsPerPage.value = value
+        dataTableItemsPerPageInput.value = value
         emit("update:itemsPerPage", value)
       }
     })
 
-    const pageCount = computed(() => {
-      return Math.ceil(props.count / itemsCountInTable.value)
+    const dataTablePagesTotal = computed(() => {
+      return Math.ceil(props.itemsTotal / dataTableItemsPerPage.value)
     })
 
+    const onPageChange = function onPageChange(pageChanged) {
+      dataTablePageCurrent.value = pageChanged
+      emit("on-page-change", dataTablePageCurrent.value)
+    }
+
     onMounted(() => {
-      inputItemsPerPage.value = props.itemsPerPage
+      dataTableItemsPerPageInput.value = props.itemsPerPage
     })
 
     return {
-      page,
-      pageCount,
-      pageChange,
-      paginationData,
-      itemsCountInTable,
-      inputItemsPerPage
+      dataTableItemsPerPage,
+      dataTablePagesTotal,
+      dataTablePageCurrent,
+      onPageChange
     }
   }
 })

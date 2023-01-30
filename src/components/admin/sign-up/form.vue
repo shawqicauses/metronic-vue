@@ -1,3 +1,4 @@
+<!-- Done Reviewing: 30/01/2023 -->
 <template>
   <form
     id="kt_sign_up_form"
@@ -6,19 +7,11 @@
     novalidate="false"
     class="form w-100"
     @submit.prevent="handleFormSubmission">
-    <!-- Begin:Heading -->
     <div class="text-start mb-10">
-      <!-- Begin:Title -->
       <h1 class="text-dark fs-3x mb-3">Create an account</h1>
-      <!-- End:Title -->
-      <!-- Begin:Text -->
       <div class="text-gray-400 fw-semibold fs-6">Get un-limited access and earn money</div>
-      <!-- End:Text -->
     </div>
-    <!-- End:Heading -->
-    <!-- Begin:Input Group -->
     <div class="row fv-row mb-7">
-      <!-- Begin:Col -->
       <div class="col-xl-6">
         <form-input
           id="first-name"
@@ -29,8 +22,6 @@
           placeholder="First Name"
           autocomplete="off" />
       </div>
-      <!-- End:Col -->
-      <!-- Begin:Col -->
       <div class="col-xl-6">
         <form-input
           id="last-name"
@@ -41,10 +32,7 @@
           placeholder="Last Name"
           autocomplete="off" />
       </div>
-      <!-- End:Col -->
     </div>
-    <!-- End:Input Group -->
-    <!-- Begin:Input Group -->
     <div class="fv-row mb-10">
       <form-input
         id="email"
@@ -55,12 +43,8 @@
         placeholder="Email"
         autocomplete="off" />
     </div>
-    <!-- End:Input Group -->
-    <!-- Begin:Input Group -->
     <div ref="formPasswordMeter" data-kt-password-meter="true" class="fv-row mb-10">
-      <!-- Begin:Wrapper -->
       <div class="mb-1">
-        <!-- Begin:Input Wrapper -->
         <div class="position-relative mb-3">
           <form-input
             id="password"
@@ -79,25 +63,17 @@
             <i class="bi bi-eye fs-2 d-none"></i>
           </span>
         </div>
-        <!-- End:Input Wrapper -->
-        <!-- Begin:Meter -->
         <div data-kt-password-meter-control="highlight" class="d-flex align-items-center mb-3">
           <div class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2" />
           <div class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2" />
           <div class="flex-grow-1 bg-secondary bg-active-success rounded h-5px me-2" />
           <div class="flex-grow-1 bg-secondary bg-active-success rounded h-5px" />
         </div>
-        <!-- End:Meter -->
       </div>
-      <!-- End:Wrapper -->
-      <!-- Begin:Hint -->
       <div data-kt-translate="sign-up-hint" class="text-muted">
         Use 8 or more characters with a mix of letters, numbers and symbols.
       </div>
-      <!-- End:Hint -->
     </div>
-    <!-- End:Input Group -->
-    <!-- Begin:Input Group -->
     <div class="fv-row mb-10">
       <form-input
         id="confirm-password"
@@ -108,10 +84,7 @@
         placeholder="Confirm Password"
         autocomplete="off" />
     </div>
-    <!-- End:Input Group -->
-    <!-- Begin:Actions -->
     <form-actions ref="formButton" button-id="kt_sign_up_submit" />
-    <!-- End:Actions -->
   </form>
 </template>
 
@@ -147,14 +120,11 @@ export default defineComponent({
     let passwordMeter
     let validator
 
-    // Password Input Validation
     const validatePassword = function validatePassword() {
       return passwordMeter.getScore() === 100
     }
 
-    // Handle Form Validation
     const handleFormValidation = function handleFormValidation() {
-      // Init Form Validator Rules
       validator = FormValidation.formValidation(elements.form.value, {
         fields: {
           "first-name": {
@@ -197,17 +167,10 @@ export default defineComponent({
             validators: {
               notEmpty: {message: "The password confirmation is required"},
               identical: {
-                message: "The password and its confirmation is not same",
+                message: "The password and its confirmation are not same",
                 compare() {
                   return elements.formPassword.value.formInput.value
                 }
-              }
-            }
-          },
-          "toc": {
-            validators: {
-              notEmpty: {
-                message: "You must accept our terms and condition"
               }
             }
           }
@@ -225,14 +188,11 @@ export default defineComponent({
       })
     }
 
-    // Handle Form Submission
     const handleFormSubmission = function handleFormSubmission() {
       validator.revalidateField("password")
       validator.validate().then((status) => {
         if (status.toLowerCase() === "valid") {
-          // Show Loading Indication
           elements.formButton.value.formButton.setAttribute("data-kt-indicator", "on")
-          // Disable Button (Avoid Multiple Click)
           elements.formButton.value.formButton.disable = true
           elements.formButton.value.formButton.ariaDisabled = true
 
@@ -243,8 +203,7 @@ export default defineComponent({
               password: user.password,
               password_confirmation: user.passwordConfirmation
             })
-            .then((response) => {
-              // Show Message Pop-Up
+            .then(() => {
               Swal.fire({
                 icon: "success",
                 text: "You have successfully signed up!",
@@ -262,7 +221,6 @@ export default defineComponent({
                 elements.formButton.value = error.response.data.message
               else elements.formButton.value = error.response.data.error
 
-              // Show Error Pop-Up
               Swal.fire({
                 icon: "error",
                 text: elements.formButton.value,
@@ -272,14 +230,11 @@ export default defineComponent({
               })
             })
             .finally(() => {
-              // Hide Loading Indication
               elements.formButton.value.formButton.removeAttribute("data-kt-indicator")
-              // Enable Button
               elements.formButton.value.formButton.disabled = false
               elements.formButton.value.formButton.ariaDisabled = false
             })
         } else {
-          // Show Error Pop-Up
           Swal.fire({
             icon: "error",
             text: "Sorry. Looks like there are some errors detected. Please try again.",

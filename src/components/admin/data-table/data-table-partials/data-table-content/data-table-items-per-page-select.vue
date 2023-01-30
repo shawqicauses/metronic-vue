@@ -1,3 +1,4 @@
+<!-- Done Reviewing: 29/01/2023 -->
 <template>
   <div
     class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start">
@@ -5,10 +6,11 @@
       <select
         v-if="itemsPerPageDropdownEnabled"
         id="items-per-page"
-        @click="onChangePerPage"
-        v-model="itemsCountInTable"
+        v-model="dataTableItemsPerPage"
         name="items-per-page"
-        class="form-select form-select-sm form-select-solid">
+        class="form-select form-select-sm form-select-solid"
+        @click="onItemsPerPageChange">
+        <option :value="5">5</option>
         <option :value="10">10</option>
         <option :value="20">20</option>
         <option :value="30">30</option>
@@ -18,27 +20,21 @@
 </template>
 
 <script>
-import {computed, defineComponent, onMounted, inject, ref} from "vue"
+import {computed, defineComponent, inject, onMounted, ref} from "vue"
 
 export default defineComponent({
   name: "data-table-items-per-page-select",
   props: {
-    itemsPerPage: {type: Number, default: 10},
-    currentPage: {type: Number, required: true},
-    itemsPerPageDropdownEnabled: {type: Boolean, required: false, default: true}
+    itemsPerPage: {type: Number, required: false, default: 10},
+    itemsPerPageDropdownEnabled: {type: Boolean, required: false, default: true},
+    pageCurrent: {type: Number, required: true}
   },
   emits: ["update:itemsPerPage"],
   setup(props, {emit}) {
-    const inputItemsPerPage = ref(10)
+    const getDataTableBodyRows = inject("getDataTableBodyRows")
+    const dataTableItemsPerPageInput = ref(10)
 
-    const getRows = inject("getRows")
-
-    const onChangePerPage = function onChangePerPage(event) {
-      console.log("perPage>>>><<<<" + event.target.value)
-      getRows("?page=" + props.currentPage + "&limit=" + event.target.value)
-    }
-
-    const itemsCountInTable = computed({
+    const dataTableItemsPerPage = computed({
       get() {
         return props.itemsPerPage
       },
@@ -47,13 +43,27 @@ export default defineComponent({
       }
     })
 
+    const onItemsPerPageChange = function onItemsPerPageChange(event) {
+      const param = [
+        "?",
+        "page",
+        "=",
+        props.pageCurrent,
+        "&",
+        "limit",
+        "=",
+        event.target.value
+      ].join("")
+      getDataTableBodyRows(param)
+    }
+
     onMounted(() => {
-      inputItemsPerPage.value = 10
+      dataTableItemsPerPageInput.value = 10
     })
 
     return {
-      itemsCountInTable,
-      onChangePerPage
+      dataTableItemsPerPage,
+      onItemsPerPageChange
     }
   }
 })

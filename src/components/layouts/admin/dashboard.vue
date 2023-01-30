@@ -1,14 +1,9 @@
+<!-- Done Reviewing: 30/01/2023 -->
 <template>
-  <!-- Begin:Page -->
   <div id="kt_app_page" class="app-page flex-column flex-column-fluid">
-    <!-- Begin:Header -->
     <dashboard-header />
-    <!-- End:Header -->
-    <!-- Begin:Wrapper -->
     <dashboard-wrapper />
-    <!-- End:Wrapper -->
   </div>
-  <!-- End:Page -->
 </template>
 
 <script>
@@ -17,7 +12,7 @@ import DashboardHeader from "../../admin/dashboard/header/index.vue"
 import DashboardWrapper from "../../admin/dashboard/wrapper.vue"
 
 export default defineComponent({
-  name: "my-dashboard",
+  name: "dashboard-layout",
   components: {
     DashboardHeader,
     DashboardWrapper
@@ -31,6 +26,7 @@ export default defineComponent({
         KTThemeMode.init()
         KTThemeModeUser.init()
         KTAppSidebar.init()
+        KTMenu.init()
       })
     })
   }

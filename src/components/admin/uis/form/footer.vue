@@ -1,6 +1,6 @@
+<!-- Done Reviewing: 30/01/2023 -->
 <template>
   <div class="m-0">
-    <!-- Begin:Toggle -->
     <button
       type="button"
       data-kt-menu-trigger="click"
@@ -9,11 +9,10 @@
       class="btn btn-flex btn-link rotate">
       <img
         :src="`../../../../../src/assets/media/flags/${language.icon}`"
-        alt="United States Icon"
+        :alt="`${language.name} Icon`"
         data-kt-element="current-lang-flag"
         class="w-25px h-25px rounded-circle me-3" />
       <span data-kt-element="current-lang-name" class="me-2">{{ language.name }}</span>
-      <!-- Begin:SVG Icon -->
       <span class="svg-icon svg-icon-3 svg-icon-muted rotate-180 m-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -26,25 +25,19 @@
             fill="currentColor" />
         </svg>
       </span>
-      <!-- End:SVG Icon -->
     </button>
-    <!-- End:Toggle -->
-    <!-- Begin:Menu -->
     <div
       id="kt_auth_lang_menu"
       data-kt-menu="true"
       class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-4">
-      <!-- Begin:Menu Items -->
       <languages-menu-item
         v-for="languageItem in languages"
         :key="languageItem.name"
         :name="languageItem.name"
         :icon="languageItem.icon"
         :link="languageItem.link"
-        @set-language="setLanguage(languageItem[['short', 'name'].join('')])" />
-      <!-- End:Menu Items -->
+        @set-language="setLanguage(languageItem.shortname)" />
     </div>
-    <!-- End:Menu -->
   </div>
 </template>
 
@@ -52,7 +45,7 @@
 import {computed, defineComponent, onBeforeMount, ref} from "vue"
 import {useStore} from "vuex"
 import {getI18nLanguages} from "../../../../plugins/i18n"
-import LanguagesMenuItem from "../languages-menu-item.vue"
+import LanguagesMenuItem from "./languages-menu-item.vue"
 
 export default defineComponent({
   name: "form-footer",
@@ -64,8 +57,7 @@ export default defineComponent({
 
     const getLanguage = function getLanguage() {
       return languages.value.find(
-        (languagesItem) =>
-          languagesItem[["short", "name"].join("")] === computed(() => store.state.language).value
+        (item) => item.shortname === computed(() => store.state.language).value
       )
     }
 

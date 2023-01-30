@@ -1,3 +1,4 @@
+<!-- Done Reviewing: 29/01/2023 -->
 <template>
   <div
     class="col-sm-12 col-md-7 d-flex align-items-center justify-content-center justify-content-md-end">
@@ -54,7 +55,7 @@
           </a>
         </li>
         <li
-          v-for="(page, index) in pages"
+          v-for="(page, index) in dataTablePages"
           :key="index"
           class="paginate_button page-item"
           :class="{active: isPageActive(page.name)}"
@@ -80,7 +81,6 @@
                 height="24"
                 fill="none">
                 <path
-                  xmlns="http://www.w3.org/2000/svg"
                   d="M12.6343 12.5657L8.45001 16.75C8.0358 17.1642 8.0358 17.8358 8.45001 18.25C8.86423 18.6642 9.5358 18.6642 9.95001 18.25L15.4929 12.7071C15.8834 12.3166 15.8834 11.6834 15.4929 11.2929L9.95001 5.75C9.5358 5.33579 8.86423 5.33579 8.45001 5.75C8.0358 6.16421 8.0358 6.83579 8.45001 7.25L12.6343 11.4343C12.9467 11.7467 12.9467 12.2533 12.6343 12.5657Z"
                   fill="currentColor"></path>
               </svg>
@@ -120,51 +120,47 @@
 </template>
 
 <script>
-import {computed, defineComponent, onMounted, ref, inject} from "vue"
+import {computed, defineComponent, inject} from "vue"
 
 export default defineComponent({
   name: "data-table-pagination",
   props: {
-    total: {type: Number, required: true},
-    totalPages: {type: Number, required: true},
-    currentPage: {type: Number, required: true},
-    perPage: {type: Number, required: true},
-    paginationInfo: {type: Object, required: true},
+    itemsTotal: {type: Number, required: true},
+    itemsPerPage: {type: Number, required: true},
+    pageTotal: {type: Number, required: true},
+    pageCurrent: {type: Number, required: true},
     maxVisibleButtons: {type: Number, required: false, default: 5}
   },
-  emits: ["page-change"],
+  emits: ["on-page-change"],
   setup(props, {emit}) {
-    const paginationData = ref(props.paginationInfo)
-
-    const startPage = computed(() => {
+    const getDataTableBodyRows = inject("getDataTableBodyRows")
+    const dataTableStartPage = computed(() => {
       if (
-        props.totalPages < props.maxVisibleButtons ||
-        props.currentPage === 1 ||
-        props.currentPage <= Math.floor(props.maxVisibleButtons / 2) ||
-        (props.currentPage + 2 > props.totalPages && props.totalPages === props.maxVisibleButtons)
+        props.pageTotal < props.maxVisibleButtons ||
+        props.pageCurrent === 1 ||
+        props.pageCurrent <= Math.floor(props.maxVisibleButtons / 2) ||
+        (props.pageCurrent + 2 > props.pageTotal && props.pageTotal === props.maxVisibleButtons)
       ) {
         return 1
       }
 
-      if (props.currentPage + 2 > props.totalPages) {
-        return props.totalPages - props.maxVisibleButtons + 1
+      if (props.pageCurrent + 2 > props.pageTotal) {
+        return props.pageTotal - props.maxVisibleButtons + 1
       }
 
-      return props.currentPage - 2
+      return props.pageCurrent - 2
     })
 
-    const getRows = inject("getRows")
-
-    const endPage = computed(() => {
-      return Math.min(startPage.value + props.maxVisibleButtons - 1, props.totalPages)
+    const dataTableEndPage = computed(() => {
+      return Math.min(dataTableStartPage.value + props.maxVisibleButtons - 1, props.pageTotal)
     })
 
-    const pages = computed(() => {
+    const dataTablePages = computed(() => {
       const range = []
-      for (let index = startPage.value; index <= endPage.value; index += 1) {
+      for (let index = dataTableStartPage.value; index <= dataTableEndPage.value; index += 1) {
         range.push({
           name: index,
-          isDisabled: index === props.currentPage
+          isDisabled: index === props.pageCurrent
         })
       }
 
@@ -172,51 +168,51 @@ export default defineComponent({
     })
 
     const isInFirstPage = computed(() => {
-      return props.currentPage === 1
+      return props.pageCurrent === 1
     })
 
     const isInLastPage = computed(() => {
-      return props.currentPage === props.totalPages
+      return props.pageCurrent === props.pageTotal
     })
 
     const onClickFirstPage = function onClickFirstPage() {
-      getRows("?page=" + 1)
-      emit("page-change", 1)
+      const param = ["?", "page", "=", 1].join("")
+      getDataTableBodyRows(param)
+      emit("on-page-change", 1)
     }
 
     const onClickPreviousPage = function onClickPreviousPage() {
-      getRows("?page=" + (props.currentPage - 1))
-      emit("page-change", props.currentPage - 1)
+      const param = ["?", "page", "=", props.pageCurrent - 1].join("")
+      getDataTableBodyRows(param)
+      emit("on-page-change", props.pageCurrent - 1)
     }
 
     const onClickPage = function onClickPage(page) {
-      getRows("?page=" + page)
-      emit("page-change", page)
+      const param = ["?", "page", "=", page].join("")
+      getDataTableBodyRows(param)
+      emit("on-page-change", page)
     }
 
     const onClickNextPage = function onClickNextPage() {
-      getRows("?page=" + (props.currentPage + 1))
-      emit("page-change", props.currentPage + 1)
+      const param = ["?", "page", "=", props.pageCurrent + 1].join("")
+      getDataTableBodyRows(param)
+      emit("on-page-change", props.pageCurrent + 1)
     }
 
     const onClickLastPage = function onClickLastPage() {
-      getRows("?page=" + props.totalPages)
-      emit("page-change", props.totalPages)
+      const param = ["?", "page", "=", props.pageTotal].join("")
+      getDataTableBodyRows(param)
+      emit("on-page-change", props.pageTotal)
     }
 
     const isPageActive = function isPageActive(page) {
-      console.log("currentPage>>>" + props.currentPage + "===" + page)
-      return props.currentPage === page
+      return props.pageCurrent === page
     }
 
-    onMounted(() => {
-      console.log(inject("getRows"))
-    })
-
     return {
-      startPage,
-      endPage,
-      pages,
+      dataTableStartPage,
+      dataTableEndPage,
+      dataTablePages,
       isInFirstPage,
       isInLastPage,
       onClickFirstPage,

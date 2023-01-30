@@ -1,3 +1,4 @@
+<!-- Done Reviewing: 29/01/2023 -->
 <template>
   <thead>
     <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
@@ -6,25 +7,26 @@
           <label for="table-head-checkbox" class="sr-only">Checkbox</label>
           <input
             id="table-head-checkbox"
-            v-model="checked"
+            v-model="dataTableChecked"
             type="checkbox"
             class="form-check-input"
-            @change="selectAll" />
+            @change="onCheckboxChange" />
         </div>
       </th>
       <template v-for="(column, index) in header" :key="index">
         <th
           :class="{'text-end': index === header.length - 1}"
           :style="{
-            minWidth: column.columnWidth ? `${column.columnWidth}px` : '0',
             width: 'auto',
+            minWidth: column.columnWidth ? `${column.columnWidth}px` : '0',
             cursor: column.sortEnabled ? 'pointer' : 'auto'
           }"
           @click="onSort(column.columnLabel, column.sortEnabled)">
           {{ column.columnName }}
           <span
-            v-if="columnLabelAndOrder.label === column.columnLabel && column.sortEnabled"
-            v-html="sortArrow" />
+            v-if="dataTableColumn.label === column.columnLabel && column.sortEnabled"
+            v-html="sortArrow">
+          </span>
         </th>
       </template>
     </tr>
@@ -43,52 +45,48 @@ export default defineComponent({
     sortLabel: {type: String, required: false, default: null},
     sortOrder: {type: String, required: false, default: "ASC"}
   },
-  emits: ["on-select", "on-sort"],
+  emits: ["on-sort", "on-items-head-select"],
   setup(props, {emit}) {
-    const checked = ref(false)
-    const columnLabelAndOrder = ref({
-      label: props.sortLabel,
-      order: props.sortOrder
-    })
+    const dataTableChecked = ref(false)
+    const dataTableColumn = ref({label: props.sortLabel, order: props.sortOrder})
 
     watch(
       () => props.checkboxEnabledValue,
-      (currentValue) => {
-        checked.value = currentValue
+      (value) => {
+        dataTableChecked.value = value
       }
     )
 
-    const selectAll = function selectAll() {
-      emit("on-select", checked.value)
-    }
+    const sortArrow = computed(() => {
+      return dataTableColumn.value.order === "ASC".toLowerCase() ? "&#x2191;" : "&#x2193;"
+    })
 
     const onSort = function onSort(label, sortEnabled) {
       if (sortEnabled) {
-        if (columnLabelAndOrder.value.label === label) {
-          if (columnLabelAndOrder.value.order === "ASC".toLowerCase()) {
-            columnLabelAndOrder.value.order = "DESC".toLowerCase()
-          } else if (columnLabelAndOrder.value.order === "DESC".toLowerCase()) {
-            columnLabelAndOrder.value.order = "ASC".toLowerCase()
-          }
+        if (dataTableColumn.value.label === label) {
+          if (dataTableColumn.value.order === "ASC".toLowerCase())
+            dataTableColumn.value.order = "DESC".toLowerCase()
+          else if (dataTableColumn.value.order === "DESC".toLowerCase())
+            dataTableColumn.value.order = "ASC".toLowerCase()
         } else {
-          columnLabelAndOrder.value.order = "ASC".toLowerCase()
-          columnLabelAndOrder.value.label = label
+          dataTableColumn.value.label = label
+          dataTableColumn.value.order = "ASC".toLowerCase()
         }
 
-        emit("on-sort", columnLabelAndOrder.value)
+        emit("on-sort", dataTableColumn.value)
       }
     }
 
-    const sortArrow = computed(() => {
-      return columnLabelAndOrder.value.order === "ASC".toLowerCase() ? "&#x2191;" : "&#x2193;"
-    })
+    const onCheckboxChange = function onCheckboxChange() {
+      emit("on-items-head-select", dataTableChecked.value)
+    }
 
     return {
-      checked,
-      columnLabelAndOrder,
-      selectAll,
+      dataTableChecked,
+      dataTableColumn,
+      sortArrow,
       onSort,
-      sortArrow
+      onCheckboxChange
     }
   }
 })

@@ -1,13 +1,14 @@
-import {createRouter, createWebHistory} from "vue-router"
+// Done Reviewing: 30/01/2023
 import AuthLayout from "@/components/layouts/admin/auth.vue"
 import DashboardLayout from "@/components/layouts/admin/dashboard.vue"
 import i18n, {getI18nLanguages} from "@/plugins/i18n"
 import store from "@/store"
+import LabelsList from "@/views/admin/labels/list.vue"
+import LanguagesList from "@/views/admin/languages/list.vue"
 import SignIn from "@/views/admin/sign-in.vue"
 import SignUp from "@/views/admin/sign-up.vue"
-import LanguagesList from "@/views/admin/languages/list.vue"
-import LabelsList from "@/views/admin/labels/list.vue"
 import TranslationsList from "@/views/admin/translations/list.vue"
+import {createRouter, createWebHistory} from "vue-router"
 
 const router = createRouter({
   history: createWebHistory(),
