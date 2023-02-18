@@ -1,6 +1,7 @@
 <!-- Done Reviewing: 30/01/2023 -->
 <template>
   <toolbar title="Labels Management" />
+  <add-label-modal ref="addLabelModal" :id-current="idCurrent" :label-current="labelCurrent" />
   <div id="kt_app_content" class="app-content flex-column-fluid">
     <div id="kt_app_content_container" class="app-container container-xxl">
       <div class="card">
@@ -87,10 +88,6 @@
                   Add Label
                 </button>
               </div>
-              <add-label-modal
-                ref="addLabelModal"
-                :id-current="idCurrent"
-                :label-current="labelCurrent" />
             </div>
           </div>
           <div class="card-body py-4">
@@ -104,7 +101,7 @@
               @on-sort="onSort"
               @on-items-select="onItemsSelect">
               <template #name="{row: label}">
-                {{ label.name.charAt(0).toUpperCase() + label.name.slice(1) }}
+                {{ label.name }}
               </template>
               <template #file="{row: label}">
                 {{ label.file.charAt(0).toUpperCase() + label.file.slice(1) }}
@@ -186,8 +183,8 @@ export default defineComponent({
       title: null
     })
 
-    const getDataTableBodyRows = function getDataTableBodyRows(params = "") {
-      axiosClient.get(`/labels${params}`).then((response) => {
+    const getDataTableBodyRows = function getDataTableBodyRows(queryString = "") {
+      axiosClient.get(`/labels${queryString}`).then((response) => {
         data.value = response.data.result.data
         itemsTotal.value = response.data.result.total
       })

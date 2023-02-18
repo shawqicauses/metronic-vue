@@ -121,6 +121,7 @@
 
 <script>
 import {computed, defineComponent, inject} from "vue"
+import createQueryString from "../../../../../core/helpers/query-string"
 
 export default defineComponent({
   name: "data-table-pagination",
@@ -176,32 +177,32 @@ export default defineComponent({
     })
 
     const onClickFirstPage = function onClickFirstPage() {
-      const param = ["?", "page", "=", 1].join("")
-      getDataTableBodyRows(param)
+      const queryString = createQueryString(1, props.itemsPerPage)
+      getDataTableBodyRows(queryString)
       emit("on-page-change", 1)
     }
 
     const onClickPreviousPage = function onClickPreviousPage() {
-      const param = ["?", "page", "=", props.pageCurrent - 1].join("")
-      getDataTableBodyRows(param)
+      const queryString = createQueryString(props.pageCurrent - 1, props.itemsPerPage)
+      getDataTableBodyRows(queryString)
       emit("on-page-change", props.pageCurrent - 1)
     }
 
     const onClickPage = function onClickPage(page) {
-      const param = ["?", "page", "=", page].join("")
-      getDataTableBodyRows(param)
+      const queryString = createQueryString(page, props.itemsPerPage)
+      getDataTableBodyRows(queryString)
       emit("on-page-change", page)
     }
 
     const onClickNextPage = function onClickNextPage() {
-      const param = ["?", "page", "=", props.pageCurrent + 1].join("")
-      getDataTableBodyRows(param)
+      const queryString = createQueryString(props.pageCurrent + 1, props.itemsPerPage)
+      getDataTableBodyRows(queryString)
       emit("on-page-change", props.pageCurrent + 1)
     }
 
     const onClickLastPage = function onClickLastPage() {
-      const param = ["?", "page", "=", props.pageTotal].join("")
-      getDataTableBodyRows(param)
+      const queryString = createQueryString(props.pageTotal, props.itemsPerPage)
+      getDataTableBodyRows(queryString)
       emit("on-page-change", props.pageTotal)
     }
 

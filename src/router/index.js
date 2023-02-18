@@ -3,6 +3,7 @@ import AuthLayout from "@/components/layouts/admin/auth.vue"
 import DashboardLayout from "@/components/layouts/admin/dashboard.vue"
 import i18n, {getI18nLanguages} from "@/plugins/i18n"
 import store from "@/store"
+import ConstantsList from "@/views/admin/constants/list.vue"
 import LabelsList from "@/views/admin/labels/list.vue"
 import LanguagesList from "@/views/admin/languages/list.vue"
 import SignIn from "@/views/admin/sign-in.vue"
@@ -26,19 +27,24 @@ const router = createRouter({
       component: DashboardLayout,
       children: [
         {
-          path: "/dashboard/languages/index",
-          name: "languages-list",
+          path: "/dashboard/localization/languages",
+          name: "languages",
           component: LanguagesList
         },
         {
-          path: "/dashboard/labels/index",
-          name: "labels-list",
+          path: "/dashboard/localization/labels",
+          name: "labels",
           component: LabelsList
         },
         {
-          path: "/dashboard/translations/index",
-          name: "translations-list",
+          path: "/dashboard/localization/translations",
+          name: "translations",
           component: TranslationsList
+        },
+        {
+          path: "/dashboard/constants/:constant",
+          name: "translations-list",
+          component: ConstantsList
         }
       ]
     },

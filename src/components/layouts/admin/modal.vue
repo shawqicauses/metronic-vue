@@ -42,6 +42,7 @@
           ref="form"
           :model="formModel"
           :rules="formRules"
+          :validate-on-rule-change="false"
           class="form"
           @submit.prevent="formSubmit">
           <div class="modal-body scroll-y mx-5 mx-xl-15 my-7">

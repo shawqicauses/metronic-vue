@@ -45,13 +45,27 @@
           placeholder="Title" />
       </el-form-item>
     </div>
+    <div v-for="language in languages" :key="language.name" class="fv-row mb-7">
+      <label :for="`language-${language.id}`" class="required fw-semibold fs-6 mb-2">
+        {{ language.name.charAt(0).toUpperCase() + language.name.slice(1) }}
+      </label>
+      <el-form-item :prop="language.name" class="mb-0">
+        <el-input
+          :id="`language-${language.id}`"
+          v-model="label[language.name]"
+          type="text"
+          :name="`language-${language.id}`"
+          :placeholder="`${
+            language.name.charAt(0).toUpperCase() + language.name.slice(1)
+          } Translation`" />
+      </el-form-item>
+    </div>
   </modal-layout>
 </template>
 
 <script>
-import {hideModal, removeModalBackdrop} from "@/core/helpers/dom"
-import Swal from "sweetalert2/dist/sweetalert2"
-import {defineComponent, ref, toRef} from "vue"
+import {defineComponent, onBeforeUpdate, onUpdated, ref, toRef} from "vue"
+import {hideModal, removeModalBackdrop} from "../../../../core/helpers/dom"
 import axiosClient from "../../../../plugins/axios"
 import ModalLayout from "../../../layouts/admin/modal.vue"
 
@@ -73,17 +87,61 @@ export default defineComponent({
       title: [{required: true, trigger: "change", message: "Title is required"}]
     })
 
+    const languages = ref([])
+    onUpdated(() => {
+      axiosClient.get("/locales/langs").then((response) => {
+        languages.value = response.data.data
+        languages.value.forEach((language) => {
+          rules.value[language.name] = [
+            {
+              required: true,
+              trigger: "change",
+              message: `${language.name} is required`
+            }
+          ]
+
+          if (id.value) {
+            if (label.value.trans) {
+              label.value.trans.forEach((translation) => {
+                if (translation[["lang", "id"].join("")] === language.id)
+                  label.value[language.name] = translation.title
+              })
+            }
+          }
+        })
+      })
+    })
+
+    onBeforeUpdate(() => {
+      addLabelModal.value.form.resetFields()
+    })
+
     const submit = function submit() {
       if (!addLabelModal.value.form) return
       addLabelModal.value.form.validate((valid) => {
         if (valid) {
+          const createTranslations = function createTranslations() {
+            const translations = []
+            languages.value.forEach((language) => {
+              if (label.value[language.name]) {
+                translations.push({
+                  [["lang", "id"].join("")]: language.id,
+                  title: label.value[language.name]
+                })
+              }
+            })
+
+            return translations
+          }
+
           addLabelModal.value.loading = true
           axiosClient[id.value ? "put" : "post"](
             id.value ? `/labels/update/${id.value}` : "/labels/create",
             {
               name: label.value.name.toLowerCase(),
               file: label.value.file.toLowerCase(),
-              title: label.value.title.toLowerCase()
+              title: label.value.title,
+              trans: createTranslations()
             }
           )
             .then(() => {
@@ -125,9 +183,9 @@ export default defineComponent({
     }
 
     const modelReset = function modelReset() {
-      label.value.name = null
-      label.value.file = null
-      label.value.title = null
+      Object.entries(label.value).forEach(([key]) => {
+        label.value[key] = null
+      })
     }
 
     expose({addLabelModal})
@@ -135,6 +193,7 @@ export default defineComponent({
       addLabelModal,
       label,
       rules,
+      languages,
       modelReset,
       submit
     }

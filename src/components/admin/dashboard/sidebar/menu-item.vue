@@ -7,7 +7,7 @@
           <globe-icon />
         </span>
       </span>
-      <span class="menu-title">{{ title }}</span>
+      <span class="menu-title">{{ t(title) }}</span>
       <span class="menu-arrow"></span>
     </span>
     <div v-if="children" class="menu-sub menu-sub-accordion">
@@ -16,7 +16,7 @@
           <span class="menu-bullet">
             <span class="bullet bullet-dot"></span>
           </span>
-          <span class="menu-title">{{ child.title }}</span>
+          <span class="menu-title">{{ t(child.title) }}</span>
         </router-link>
       </div>
     </div>

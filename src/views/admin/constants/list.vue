@@ -1,10 +1,11 @@
 <!-- Done Reviewing: 30/01/2023 -->
 <template>
-  <toolbar title="Languages Management" />
-  <add-language-modal
-    ref="addLanguageModal"
+  <toolbar title="Constants Management" />
+  <add-constant-modal
+    ref="addConstantModal"
     :id-current="idCurrent"
-    :language-current="languageCurrent" />
+    :constant-name="constant"
+    :constant-current="constantCurrent" />
   <div id="kt_app_content" class="app-content flex-column-fluid">
     <div id="kt_app_content_container" class="app-container container-xxl">
       <div class="card">
@@ -14,19 +15,19 @@
               <h2 class="fs-2x fw-bold mb-10">Welcome!</h2>
               <p class="text-gray-400 fs-5 fw-semibold mb-13">
                 <span>
-                  There are no languages added yet.
+                  There are no {{ constant }} added yet.
                   <br />
-                  Kickstart your dashboard by adding a your first language
+                  Kickstart your dashboard by adding a your first {{ constant }}
                 </span>
               </p>
               <button type="button" class="btn btn-primary er fs-6 px-8 py-4" @click="showAddModal">
-                Add Language
+                Add {{ constant }}
               </button>
             </div>
             <div class="text-center px-5">
               <img
                 src="@/assets/media/illustrations/01.png"
-                alt="Add Language Illustration"
+                :alt="`Add ${constant} Illustration`"
                 class="mw-100 mh-300px" />
             </div>
           </div>
@@ -56,18 +57,18 @@
                       fill="currentColor" />
                   </svg>
                 </span>
-                <label for="search-languages" class="sr-only">Search Languages</label>
+                <label for="search-constants" class="sr-only">Search {{ constant }}</label>
                 <input
-                  id="search-languages"
+                  id="search-constants"
                   type="text"
-                  name="search-languages"
-                  placeholder="Search Languages"
-                  data-kt-language-table-filter="search"
+                  name="search-constants"
+                  :placeholder="`Search ${constant}`"
+                  data-kt-constant-table-filter="search"
                   class="form-control form-control-solid w-250px ps-14" />
               </div>
             </div>
             <div class="card-toolbar">
-              <div data-kt-language-table-toolbar="base" class="d-flex justify-content-end">
+              <div data-kt-constant-table-toolbar="base" class="d-flex justify-content-end">
                 <button type="button" class="btn btn-primary" @click="showAddModal">
                   <span class="svg-icon svg-icon-2">
                     <svg
@@ -88,7 +89,7 @@
                       <rect x="4" y="11" rx="1" width="16" height="2" fill="currentColor" />
                     </svg>
                   </span>
-                  Add Language
+                  Add {{ constant }}
                 </button>
               </div>
             </div>
@@ -103,25 +104,10 @@
               :items-per-page-dropdown-enabled="true"
               @on-sort="onSort"
               @on-items-select="onItemsSelect">
-              <template #name="{row: language}">
-                {{ language.name.charAt(0).toUpperCase() + language.name.slice(1) }}
+              <template #name="{row: constantRow}">
+                {{ constantRow.name.charAt(0).toUpperCase() + constantRow.name.slice(1) }}
               </template>
-              <template #shortname="{row: language}">
-                {{ language.shortname.toUpperCase() }}
-              </template>
-              <template #direction="{row: language}">
-                {{ language.direction.toUpperCase() }}
-              </template>
-              <template #dirword="{row: language}">
-                {{ language.dirword.charAt(0).toUpperCase() + language.dirword.slice(1) }}
-              </template>
-              <template #icon="{row: language}">
-                <img
-                  :src="`../../../src/assets/media/flags/${language.icon}`"
-                  :alt="`${language.icon}`"
-                  class="w-20px h-20px rounded-1 ms-2" />
-              </template>
-              <template #actions="{row: language}">
+              <template #actions="{row: constantRow}">
                 <a
                   href="#"
                   data-kt-menu-trigger="click"
@@ -146,12 +132,18 @@
                   data-kt-menu="true"
                   class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4">
                   <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3" @click="showUpdateModal(language.id)">
+                    <a
+                      href="#"
+                      class="menu-link px-3"
+                      @click.prevent="showUpdateModal(constantRow.id)">
                       Update
                     </a>
                   </div>
                   <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3" @click="deleteLanguage(language.id)">
+                    <a
+                      href="#"
+                      class="menu-link px-3"
+                      @click.prevent="deleteConstant(constantRow.id)">
                       Delete
                     </a>
                   </div>
@@ -168,32 +160,41 @@
 <script>
 import Toolbar from "@/components/admin/dashboard/toolbar.vue"
 import DataTable from "@/components/admin/data-table/index.vue"
-import AddLanguageModal from "@/components/admin/modals/forms/add-language-modal.vue"
+import AddConstantModal from "@/components/admin/modals/forms/add-constant-modal.vue"
 import axiosClient from "@/plugins/axios"
 import arraySort from "array-sort"
 import {defineComponent, onBeforeMount, onMounted, provide, ref} from "vue"
+import {onBeforeRouteUpdate, useRoute} from "vue-router"
 import {showModal} from "../../../core/helpers/dom"
 
 export default defineComponent({
-  name: "languages-list",
-  components: {Toolbar, AddLanguageModal, DataTable},
+  name: "constants-list",
+  components: {Toolbar, AddConstantModal, DataTable},
   setup() {
+    const route = useRoute()
+    const constant = ref(route.params.constant)
     const header = ref([
-      {columnName: "Language Name", columnLabel: "name", sortEnabled: true, columnWidth: 230},
-      {columnName: "Short Name", columnLabel: "shortname", sortEnabled: true, columnWidth: 175},
-      {columnName: "Direction", columnLabel: "direction", sortEnabled: true, columnWidth: 175},
-      {columnName: "Direction Word", columnLabel: "dirword", sortEnabled: true, columnWidth: 175},
-      {columnName: "Icon", columnLabel: "icon", sortEnabled: false, columnWidth: 175},
-      {columnName: "Actions", columnLabel: "actions", sortEnabled: false, columnWidth: 175}
+      {
+        columnName: `${constant.value} Name`,
+        columnLabel: "name",
+        sortEnabled: true,
+        columnWidth: 175
+      },
+      {
+        columnName: "Actions",
+        columnLabel: "actions",
+        sortEnabled: false,
+        columnWidth: 175
+      }
     ])
 
     const data = ref([])
     const itemsTotal = ref(0)
-    const initLanguages = ref([])
+    const initConstants = ref([])
     const idsSelected = ref([])
-    const addLanguageModal = ref(null)
+    const addConstantModal = ref(null)
     const idCurrent = ref(null)
-    const languageCurrent = ref({
+    const constantCurrent = ref({
       name: null,
       shortname: null,
       direction: null,
@@ -202,21 +203,21 @@ export default defineComponent({
     })
 
     const getDataTableBodyRows = function getDataTableBodyRows(queryString = "") {
-      axiosClient.get(`/languages${queryString}`).then((response) => {
+      axiosClient.get(`/${constant.value}${queryString}`).then((response) => {
         data.value = response.data.result.data
         itemsTotal.value = response.data.result.total
       })
     }
 
-    const deleteLanguage = function deleteLanguage(id) {
-      axiosClient.delete(`/languages/delete/${id}`).then(() => {
+    const deleteConstant = function deleteConstant(id) {
+      axiosClient.delete(`/${constant.value}/delete/${id}`).then(() => {
         getDataTableBodyRows()
       })
     }
 
-    const deleteFewLanguages = function deleteFewLanguages() {
+    const deleteFewConstants = function deleteFewConstants() {
       idsSelected.value.forEach((item) => {
-        deleteLanguage(item)
+        deleteConstant(item)
       })
 
       idsSelected.value.length = 0
@@ -234,47 +235,62 @@ export default defineComponent({
 
     const showAddModal = function showAddModal() {
       idCurrent.value = null
-      languageCurrent.value = {
-        name: null,
-        shortname: null,
-        direction: null,
-        dirword: null,
-        icon: null
-      }
-
-      showModal(addLanguageModal.value.addLanguageModal.modal)
+      constantCurrent.value = {name: null}
+      showModal(addConstantModal.value.addConstantModal.modal)
     }
 
     const showUpdateModal = function showUpdateModal(id) {
       idCurrent.value = id
-      axiosClient.get(`/languages/show/${id}`).then((response) => {
-        languageCurrent.value = response.data.result
-        showModal(addLanguageModal.value.addLanguageModal.modal)
+      axiosClient.get(`/${constant.value}/show/${id}`).then((response) => {
+        constantCurrent.value = response.data.result
+        showModal(addConstantModal.value.addConstantModal.modal)
       })
     }
 
     provide("getDataTableBodyRows", getDataTableBodyRows)
+    onBeforeRouteUpdate(async (to) => {
+      constant.value = to.params.constant
+      header.value = [
+        {
+          columnName: `${constant.value} Name`,
+          columnLabel: "name",
+          sortEnabled: true,
+          columnWidth: 175
+        },
+        {
+          columnName: "Actions",
+          columnLabel: "actions",
+          sortEnabled: false,
+          columnWidth: 175
+        }
+      ]
+
+      data.value = []
+      getDataTableBodyRows()
+    })
+
     onBeforeMount(() => {
       data.value = []
       getDataTableBodyRows()
     })
 
     onMounted(() => {
-      initLanguages.value.splice(0, data.value.length, ...data.value)
+      initConstants.value.splice(0, data.value.length, ...data.value)
     })
 
     return {
+      constant,
       header,
       data,
       itemsTotal,
       idsSelected,
-      addLanguageModal,
+      addConstantModal,
       idCurrent,
-      languageCurrent,
+      constantCurrent,
       onSort,
       onItemsSelect,
-      deleteLanguage,
-      deleteFewLanguages,
+      deleteConstant,
+      deleteFewConstants,
       showAddModal,
       showUpdateModal
     }

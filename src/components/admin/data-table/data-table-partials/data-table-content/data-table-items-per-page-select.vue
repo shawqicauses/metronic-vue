@@ -8,8 +8,7 @@
         id="items-per-page"
         v-model="dataTableItemsPerPage"
         name="items-per-page"
-        class="form-select form-select-sm form-select-solid"
-        @click="onItemsPerPageChange">
+        class="form-select form-select-sm form-select-solid">
         <option :value="5">5</option>
         <option :value="10">10</option>
         <option :value="20">20</option>
@@ -20,7 +19,7 @@
 </template>
 
 <script>
-import {computed, defineComponent, inject, onMounted, ref} from "vue"
+import {computed, defineComponent, onMounted, ref} from "vue"
 
 export default defineComponent({
   name: "data-table-items-per-page-select",
@@ -31,7 +30,6 @@ export default defineComponent({
   },
   emits: ["update:itemsPerPage"],
   setup(props, {emit}) {
-    const getDataTableBodyRows = inject("getDataTableBodyRows")
     const dataTableItemsPerPageInput = ref(10)
 
     const dataTableItemsPerPage = computed({
@@ -43,28 +41,11 @@ export default defineComponent({
       }
     })
 
-    const onItemsPerPageChange = function onItemsPerPageChange(event) {
-      const param = [
-        "?",
-        "page",
-        "=",
-        props.pageCurrent,
-        "&",
-        "limit",
-        "=",
-        event.target.value
-      ].join("")
-      getDataTableBodyRows(param)
-    }
-
     onMounted(() => {
       dataTableItemsPerPageInput.value = 10
     })
 
-    return {
-      dataTableItemsPerPage,
-      onItemsPerPageChange
-    }
+    return {dataTableItemsPerPage}
   }
 })
 </script>

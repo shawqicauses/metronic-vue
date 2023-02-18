@@ -1,6 +1,10 @@
 <!-- Done Reviewing: 30/01/2023 -->
 <template>
   <toolbar title="Translations Management" />
+  <add-translation-modal
+    ref="addTranslationModal"
+    :id-current="idCurrent"
+    :translation-current="translationCurrent" />
   <div id="kt_app_content" class="app-content flex-column-fluid">
     <div id="kt_app_content_container" class="app-container container-xxl">
       <div class="card">
@@ -87,10 +91,6 @@
                   Add Translation
                 </button>
               </div>
-              <add-translation-modal
-                ref="addTranslationModal"
-                :id-current="idCurrent"
-                :translation-current="translationCurrent" />
             </div>
           </div>
           <div class="card-body py-4">
@@ -191,8 +191,8 @@ export default defineComponent({
       language: null
     })
 
-    const getDataTableBodyRows = function getDataTableBodyRows(params = "") {
-      axiosClient.get(`/translations${params}`).then((response) => {
+    const getDataTableBodyRows = function getDataTableBodyRows(queryString = "") {
+      axiosClient.get(`/translations${queryString}`).then((response) => {
         data.value = response.data.result.data
         itemsTotal.value = response.data.result.total
       })

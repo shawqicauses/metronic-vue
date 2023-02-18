@@ -16,7 +16,8 @@
 </template>
 
 <script>
-import {computed, defineComponent, onMounted, ref, watch} from "vue"
+import {computed, defineComponent, inject, onMounted, ref, watch} from "vue"
+import createQueryString from "../../../../core/helpers/query-string"
 import DataTableItemsPerPageSelect from "./data-table-content/data-table-items-per-page-select.vue"
 import DataTablePagination from "./data-table-content/data-table-pagination.vue"
 
@@ -31,6 +32,7 @@ export default defineComponent({
   },
   emits: ["update:itemsPerPage", "on-page-change"],
   setup(props, {emit}) {
+    const getDataTableBodyRows = inject("getDataTableBodyRows")
     const dataTableItemsPerPageInput = ref(props.itemsPerPage)
     const dataTablePageCurrent = ref(props.pageCurrent)
 
@@ -45,6 +47,12 @@ export default defineComponent({
       () => dataTableItemsPerPageInput.value,
       () => {
         dataTablePageCurrent.value = 1
+        const queryString = createQueryString(
+          dataTablePageCurrent.value,
+          dataTableItemsPerPageInput.value
+        )
+
+        getDataTableBodyRows(queryString)
       }
     )
 
