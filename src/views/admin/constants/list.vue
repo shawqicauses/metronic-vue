@@ -21,7 +21,7 @@
                 </span>
               </p>
               <button type="button" class="btn btn-primary er fs-6 px-8 py-4" @click="showAddModal">
-                {{ t("add-button") }} {{ constant }}
+                {{ t("main.add-button") }} {{ constant }}
               </button>
             </div>
             <div class="text-center px-5">
@@ -89,7 +89,7 @@
                       <rect x="4" y="11" rx="1" width="16" height="2" fill="currentColor" />
                     </svg>
                   </span>
-                  {{ t("add-button") }} {{ constant }}
+                  {{ t("main.add-button") }} {{ constant }}
                 </button>
               </div>
             </div>
@@ -105,7 +105,7 @@
               @on-sort="onSort"
               @on-items-select="onItemsSelect">
               <template #name="{row: constantRow}">
-                {{ constantRow.name.charAt(0).toUpperCase() + constantRow.name.slice(1) }}
+                {{ t(constant + "." + constantRow.name) }}
               </template>
               <template #actions="{row: constantRow}">
                 <a
@@ -114,7 +114,7 @@
                   data-kt-menu-placement="bottom-end"
                   data-kt-menu-flip="top-end"
                   class="btn btn-sm btn-light btn-active-light-primary">
-                  {{ t("actions-button") }}
+                  {{ t("main.actions-button") }}
                   <span class="svg-icon svg-icon-5 m-0">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@
                       href="#"
                       class="menu-link px-3"
                       @click.prevent="showUpdateModal(constantRow.id)">
-                      {{ t("update-button") }}
+                      {{ t("main.update-button") }}
                     </a>
                   </div>
                   <div class="menu-item px-3">
@@ -144,7 +144,7 @@
                       href="#"
                       class="menu-link px-3"
                       @click.prevent="deleteConstant(constantRow.id)">
-                      {{ t("delete-button") }}
+                      {{ t("main.delete-button") }}
                     </a>
                   </div>
                 </div>

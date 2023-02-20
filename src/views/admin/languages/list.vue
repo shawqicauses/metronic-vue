@@ -20,7 +20,7 @@
                 </span>
               </p>
               <button type="button" class="btn btn-primary er fs-6 px-8 py-4" @click="showAddModal">
-                {{ t("add-button") }} {{ t("language") }}
+                {{ t("main.add-button") }} {{ t("main.language") }}
               </button>
             </div>
             <div class="text-center px-5">
@@ -88,7 +88,7 @@
                       <rect x="4" y="11" rx="1" width="16" height="2" fill="currentColor" />
                     </svg>
                   </span>
-                  {{ t("add-button") }} {{ t("language") }}
+                  {{ t("main.add-button") }} {{ t("main.language") }}
                 </button>
               </div>
             </div>
@@ -128,7 +128,7 @@
                   data-kt-menu-placement="bottom-end"
                   data-kt-menu-flip="top-end"
                   class="btn btn-sm btn-light btn-active-light-primary">
-                  {{ t("actions-button") }}
+                  {{ t("main.actions-button") }}
                   <span class="svg-icon svg-icon-5 m-0">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -147,12 +147,12 @@
                   class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4">
                   <div class="menu-item px-3">
                     <a href="#" class="menu-link px-3" @click="showUpdateModal(language.id)">
-                      {{ t("update-button") }}
+                      {{ t("main.update-button") }}
                     </a>
                   </div>
                   <div class="menu-item px-3">
                     <a href="#" class="menu-link px-3" @click="deleteLanguage(language.id)">
-                      {{ t("delete-button") }}
+                      {{ t("main.delete-button") }}
                     </a>
                   </div>
                 </div>
