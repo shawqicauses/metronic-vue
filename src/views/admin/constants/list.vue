@@ -21,7 +21,7 @@
                 </span>
               </p>
               <button type="button" class="btn btn-primary er fs-6 px-8 py-4" @click="showAddModal">
-                Add {{ constant }}
+                {{ t("add-button") }} {{ constant }}
               </button>
             </div>
             <div class="text-center px-5">
@@ -89,7 +89,7 @@
                       <rect x="4" y="11" rx="1" width="16" height="2" fill="currentColor" />
                     </svg>
                   </span>
-                  Add {{ constant }}
+                  {{ t("add-button") }} {{ constant }}
                 </button>
               </div>
             </div>
@@ -114,7 +114,7 @@
                   data-kt-menu-placement="bottom-end"
                   data-kt-menu-flip="top-end"
                   class="btn btn-sm btn-light btn-active-light-primary">
-                  Actions
+                  {{ t("actions-button") }}
                   <span class="svg-icon svg-icon-5 m-0">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@
                       href="#"
                       class="menu-link px-3"
                       @click.prevent="showUpdateModal(constantRow.id)">
-                      Update
+                      {{ t("update-button") }}
                     </a>
                   </div>
                   <div class="menu-item px-3">
@@ -144,7 +144,7 @@
                       href="#"
                       class="menu-link px-3"
                       @click.prevent="deleteConstant(constantRow.id)">
-                      Delete
+                      {{ t("delete-button") }}
                     </a>
                   </div>
                 </div>
@@ -164,6 +164,7 @@ import AddConstantModal from "@/components/admin/modals/forms/add-constant-modal
 import axiosClient from "@/plugins/axios"
 import arraySort from "array-sort"
 import {defineComponent, onBeforeMount, onMounted, provide, ref} from "vue"
+import {useI18n} from "vue-i18n"
 import {onBeforeRouteUpdate, useRoute} from "vue-router"
 import {showModal} from "../../../core/helpers/dom"
 
@@ -172,6 +173,7 @@ export default defineComponent({
   components: {Toolbar, AddConstantModal, DataTable},
   setup() {
     const route = useRoute()
+    const {t} = useI18n({useScope: "global"})
     const constant = ref(route.params.constant)
     const header = ref([
       {
@@ -279,6 +281,7 @@ export default defineComponent({
     })
 
     return {
+      t,
       constant,
       header,
       data,

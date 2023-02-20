@@ -17,7 +17,7 @@
                 </span>
               </p>
               <button type="button" class="btn btn-primary er fs-6 px-8 py-4" @click="showAddModal">
-                Add Label
+                {{ t("add-button") }} {{ t("label") }}
               </button>
             </div>
             <div class="text-center px-5">
@@ -85,7 +85,7 @@
                       <rect x="4" y="11" rx="1" width="16" height="2" fill="currentColor" />
                     </svg>
                   </span>
-                  Add Label
+                  {{ t("add-button") }} {{ t("label") }}
                 </button>
               </div>
             </div>
@@ -116,7 +116,7 @@
                   data-kt-menu-placement="bottom-end"
                   data-kt-menu-flip="top-end"
                   class="btn btn-sm btn-light btn-active-light-primary">
-                  Actions
+                  {{ t("actions-button") }}
                   <span class="svg-icon svg-icon-5 m-0">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -135,11 +135,13 @@
                   class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4">
                   <div class="menu-item px-3">
                     <a href="#" class="menu-link px-3" @click="showUpdateModal(label.id)">
-                      Update
+                      {{ t("update-button") }}
                     </a>
                   </div>
                   <div class="menu-item px-3">
-                    <a href="#" class="menu-link px-3" @click="deleteLabel(label.id)">Delete</a>
+                    <a href="#" class="menu-link px-3" @click="deleteLabel(label.id)">
+                      {{ t("delete-button") }}
+                    </a>
                   </div>
                 </div>
               </template>
@@ -158,12 +160,14 @@ import AddLabelModal from "@/components/admin/modals/forms/add-label-modal.vue"
 import axiosClient from "@/plugins/axios"
 import arraySort from "array-sort"
 import {defineComponent, onBeforeMount, onMounted, provide, ref} from "vue"
+import {useI18n} from "vue-i18n"
 import {showModal} from "../../../core/helpers/dom"
 
 export default defineComponent({
   name: "labels-list",
   components: {Toolbar, AddLabelModal, DataTable},
   setup() {
+    const {t} = useI18n({useScope: "global"})
     const header = ref([
       {columnName: "Label Name", columnLabel: "name", sortEnabled: true, columnWidth: 230},
       {columnName: "File", columnLabel: "file", sortEnabled: true, columnWidth: 175},
@@ -244,6 +248,7 @@ export default defineComponent({
     })
 
     return {
+      t,
       header,
       data,
       itemsTotal,
