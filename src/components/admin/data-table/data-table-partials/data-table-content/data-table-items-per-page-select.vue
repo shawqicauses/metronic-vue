@@ -3,17 +3,16 @@
   <div
     class="col-sm-12 col-md-5 d-flex align-items-center justify-content-center justify-content-md-start">
     <label for="items-per-page">
-      <select
+      <el-select
         v-if="itemsPerPageDropdownEnabled"
         id="items-per-page"
         v-model="dataTableItemsPerPage"
-        name="items-per-page"
-        class="form-select form-select-sm form-select-solid">
-        <option :value="5">5</option>
-        <option :value="10">10</option>
-        <option :value="20">20</option>
-        <option :value="30">30</option>
-      </select>
+        name="items-per-page">
+        <el-option :value="5" :label="5" />
+        <el-option :value="10" :label="10" />
+        <el-option :value="20" :label="20" />
+        <el-option :value="30" :label="30" />
+      </el-select>
     </label>
   </div>
 </template>
@@ -31,7 +30,6 @@ export default defineComponent({
   emits: ["update:itemsPerPage"],
   setup(props, {emit}) {
     const dataTableItemsPerPageInput = ref(10)
-
     const dataTableItemsPerPage = computed({
       get() {
         return props.itemsPerPage

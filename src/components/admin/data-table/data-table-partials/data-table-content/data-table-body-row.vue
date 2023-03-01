@@ -1,8 +1,8 @@
 <!-- Done Reviewing: 29/01/2023 -->
 <template>
-  <tbody class="fw-semibold text-gray-600">
+  <tbody class="sortable-container fw-semibold text-gray-600">
     <template v-for="(row, index) in data" :key="index">
-      <tr>
+      <tr :id="row.id" class="sortable-item">
         <td v-if="checkboxEnabled">
           <div class="form-check form-check-sm form-check-custom form-check-solid">
             <label :for="`${row[checkboxLabel]}-checkbox`" class="sr-only">Checkbox</label>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import Sortable from "sortablejs"
 import {defineComponent, onMounted, ref, watch} from "vue"
 
 export default defineComponent({
@@ -57,6 +58,20 @@ export default defineComponent({
 
     onMounted(() => {
       KTMenu.init()
+
+      const container = document.querySelector(".sortable-container")
+      if (!container) return false
+
+      // eslint-disable-next-line
+      const mySortable = new Sortable(container, {
+        draggable: ".sortable-item",
+        onEnd(event) {
+          const ids = []
+          event.to.children.forEach((item) => {
+            ids.push(item.id)
+          })
+        }
+      })
     })
 
     return {

@@ -166,12 +166,14 @@ import AddTranslationModal from "@/components/admin/modals/forms/add-translation
 import axiosClient from "@/plugins/axios"
 import arraySort from "array-sort"
 import {defineComponent, onBeforeMount, onMounted, provide, ref} from "vue"
+import {useI18n} from "vue-i18n"
 import {showModal} from "../../../core/helpers/dom"
 
 export default defineComponent({
   name: "translations-list",
   components: {Toolbar, AddTranslationModal, DataTable},
   setup() {
+    const {t} = useI18n({useScope: "global"})
     const header = ref([
       {columnName: "Translation Name", columnLabel: "title", sortEnabled: true, columnWidth: 230},
       {columnName: "Label", columnLabel: "label", sortEnabled: true, columnWidth: 175},
@@ -252,6 +254,7 @@ export default defineComponent({
     })
 
     return {
+      t,
       header,
       data,
       itemsTotal,
