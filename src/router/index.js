@@ -6,7 +6,8 @@ import store from "@/store"
 import ConstantsList from "@/views/admin/constants/list.vue"
 import LabelsList from "@/views/admin/labels/list.vue"
 import LanguagesList from "@/views/admin/languages/list.vue"
-import AddSection from "@/views/admin/sections/add.vue"
+import SectionAdd from "@/views/admin/sections/add.vue"
+import SectionList from "@/views/admin/sections/list.vue"
 import SignIn from "@/views/admin/sign-in.vue"
 import SignUp from "@/views/admin/sign-up.vue"
 import TranslationsList from "@/views/admin/translations/list.vue"
@@ -48,9 +49,19 @@ const router = createRouter({
           component: ConstantsList
         },
         {
+          path: "/dashboard/sections/:section",
+          name: "section-list",
+          component: SectionList
+        },
+        {
           path: "/dashboard/sections/:section/add",
-          name: "add-section",
-          component: AddSection
+          name: "section-add",
+          component: SectionAdd
+        },
+        {
+          path: "/dashboard/sections/:section/update/:id",
+          name: "section-update",
+          component: SectionAdd
         }
       ]
     },

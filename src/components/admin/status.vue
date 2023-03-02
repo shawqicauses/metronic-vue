@@ -37,11 +37,11 @@
 </template>
 
 <script>
-import {defineComponent, ref} from "vue"
+import {defineComponent, ref, toRef, watch} from "vue"
 
 export default defineComponent({
   name: "add-status",
-  props: {},
+  props: {default: {type: Number, required: false, default: null}},
   setup(props, {expose}) {
     const statuses = ref([
       {name: "Published", id: 0, color: "bg-success"},
@@ -50,9 +50,17 @@ export default defineComponent({
       {name: "In-Active", id: 3, color: "bg-danger"}
     ])
 
+    const defaultRef = toRef(props, "default")
     const status = ref(null)
     const date = ref(null)
     const color = ref("bg-success")
+
+    watch(
+      () => defaultRef.value,
+      (value) => {
+        status.value = value
+      }
+    )
 
     const setColor = function setColor(value) {
       const selected = statuses.value.find((item) => Number(item.id) === Number(value))

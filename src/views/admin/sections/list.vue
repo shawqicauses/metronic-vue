@@ -1,11 +1,5 @@
-<!-- Done Reviewing: 30/01/2023 -->
 <template>
-  <toolbar title="Constants Management" />
-  <add-constant-modal
-    ref="addConstantModal"
-    :id-current="idCurrent"
-    :constant-name="constant"
-    :constant-current="constantCurrent" />
+  <toolbar title="Sections Management" />
   <div id="kt_app_content" class="app-content flex-column-fluid">
     <div id="kt_app_content_container" class="app-container container-xxl">
       <div class="card">
@@ -15,19 +9,21 @@
               <h2 class="fs-2x fw-bold mb-10">Welcome!</h2>
               <p class="text-gray-400 fs-5 fw-semibold mb-13">
                 <span>
-                  There are no {{ constant }} added yet.
+                  There are no {{ section }} added yet.
                   <br />
-                  Kickstart your dashboard by adding a your first {{ constant }}
+                  Kickstart your dashboard by adding a your first {{ section }}
                 </span>
               </p>
-              <button type="button" class="btn btn-primary er fs-6 px-8 py-4" @click="showAddModal">
-                {{ t("main.add-button") }} {{ constant }}
-              </button>
+              <router-link
+                :to="`/dashboard/sections/${section}/add`"
+                class="btn btn-primary er fs-6 px-8 py-4">
+                {{ t("main.add-button") }} {{ section }}
+              </router-link>
             </div>
             <div class="text-center px-5">
               <img
                 src="@/assets/media/illustrations/01.png"
-                :alt="`Add ${constant} Illustration`"
+                :alt="`Add ${section} Illustration`"
                 class="mw-100 mh-300px" />
             </div>
           </div>
@@ -57,19 +53,19 @@
                       fill="currentColor" />
                   </svg>
                 </span>
-                <label for="search-constants" class="sr-only">Search {{ constant }}</label>
+                <label for="search-sections" class="sr-only">Search {{ section }}</label>
                 <input
-                  id="search-constants"
+                  id="search-sections"
                   type="text"
-                  name="search-constants"
-                  :placeholder="`Search ${constant}`"
-                  data-kt-constant-table-filter="search"
+                  name="search-sections"
+                  :placeholder="`Search ${section}`"
+                  data-kt-section-table-filter="search"
                   class="form-control form-control-solid w-250px ps-14" />
               </div>
             </div>
             <div class="card-toolbar">
-              <div data-kt-constant-table-toolbar="base" class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" @click="showAddModal">
+              <div data-kt-section-table-toolbar="base" class="d-flex justify-content-end">
+                <router-link :to="`/dashboard/sections/${section}/add`" class="btn btn-primary">
                   <span class="svg-icon svg-icon-2">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -89,8 +85,8 @@
                       <rect x="4" y="11" rx="1" width="16" height="2" fill="currentColor" />
                     </svg>
                   </span>
-                  {{ t("main.add-button") }} {{ constant }}
-                </button>
+                  {{ t("main.add-button") }} {{ section }}
+                </router-link>
               </div>
             </div>
           </div>
@@ -104,10 +100,10 @@
               :items-per-page-dropdown-enabled="true"
               @on-sort="onSort"
               @on-items-select="onItemsSelect">
-              <template #name="{row: constantRow}">
-                {{ t(constant + "." + constantRow.name) }}
+              <template #name="{row: sectionRow}">
+                {{ sectionRow.name }}
               </template>
-              <template #actions="{row: constantRow}">
+              <template #actions="{row: sectionRow}">
                 <a
                   href="#"
                   data-kt-menu-trigger="click"
@@ -132,18 +128,17 @@
                   data-kt-menu="true"
                   class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px py-4">
                   <div class="menu-item px-3">
-                    <a
-                      href="#"
-                      class="menu-link px-3"
-                      @click.prevent="showUpdateModal(constantRow.id)">
+                    <router-link
+                      :to="`/dashboard/sections/${section}/update/${sectionRow.id}`"
+                      class="menu-link px-3">
                       {{ t("main.update-button") }}
-                    </a>
+                    </router-link>
                   </div>
                   <div class="menu-item px-3">
                     <a
                       href="#"
                       class="menu-link px-3"
-                      @click.prevent="deleteConstant(constantRow.id)">
+                      @click.prevent="deleteSection(sectionRow.id)">
                       {{ t("main.delete-button") }}
                     </a>
                   </div>
@@ -160,24 +155,22 @@
 <script>
 import Toolbar from "@/components/admin/dashboard/toolbar.vue"
 import DataTable from "@/components/admin/data-table/index.vue"
-import AddConstantModal from "@/components/admin/modals/forms/add-constant-modal.vue"
 import axiosClient from "@/plugins/axios"
 import arraySort from "array-sort"
 import {defineComponent, onBeforeMount, onMounted, provide, ref} from "vue"
 import {useI18n} from "vue-i18n"
 import {onBeforeRouteUpdate, useRoute} from "vue-router"
-import {showModal} from "../../../core/helpers/dom"
 
 export default defineComponent({
-  name: "constants-list",
-  components: {Toolbar, AddConstantModal, DataTable},
+  name: "sections-list",
+  components: {Toolbar, DataTable},
   setup() {
     const route = useRoute()
     const {t} = useI18n({useScope: "global"})
-    const constant = ref(route.params.constant)
+    const section = ref(route.params.section)
     const header = ref([
       {
-        columnName: `${constant.value} Name`,
+        columnName: `${section.value} Name`,
         columnLabel: "name",
         sortEnabled: true,
         columnWidth: 175
@@ -192,28 +185,25 @@ export default defineComponent({
 
     const data = ref([])
     const itemsTotal = ref(0)
-    const initConstants = ref([])
+    const initSections = ref([])
     const idsSelected = ref([])
-    const addConstantModal = ref(null)
-    const idCurrent = ref(null)
-    const constantCurrent = ref({name: null})
 
     const getDataTableBodyRows = function getDataTableBodyRows(queryString = "") {
-      axiosClient.get(`/${constant.value}${queryString}`).then((response) => {
+      axiosClient.get(`/${section.value}${queryString}`).then((response) => {
         data.value = response.data.result.data
         itemsTotal.value = response.data.result.total
       })
     }
 
-    const deleteConstant = function deleteConstant(id) {
-      axiosClient.delete(`/${constant.value}/delete/${id}`).then(() => {
+    const deleteSection = function deleteSection(id) {
+      axiosClient.delete(`/${section.value}/delete/${id}`).then(() => {
         getDataTableBodyRows()
       })
     }
 
-    const deleteFewConstants = function deleteFewConstants() {
+    const deleteFewSections = function deleteFewSections() {
       idsSelected.value.forEach((item) => {
-        deleteConstant(item)
+        deleteSection(item)
       })
 
       idsSelected.value.length = 0
@@ -229,26 +219,12 @@ export default defineComponent({
       else idsSelected.value = [...idsSelected.value, ...itemsSelected]
     }
 
-    const showAddModal = function showAddModal() {
-      idCurrent.value = null
-      constantCurrent.value = {name: null}
-      showModal(addConstantModal.value.addConstantModal.modal)
-    }
-
-    const showUpdateModal = function showUpdateModal(id) {
-      idCurrent.value = id
-      axiosClient.get(`/${constant.value}/show/${id}`).then((response) => {
-        constantCurrent.value = response.data.result
-        showModal(addConstantModal.value.addConstantModal.modal)
-      })
-    }
-
     provide("getDataTableBodyRows", getDataTableBodyRows)
     onBeforeRouteUpdate(async (to) => {
-      constant.value = to.params.constant
+      section.value = to.params.section
       header.value = [
         {
-          columnName: `${constant.value} Name`,
+          columnName: `${section.value} Name`,
           columnLabel: "name",
           sortEnabled: true,
           columnWidth: 175
@@ -271,25 +247,20 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      initConstants.value.splice(0, data.value.length, ...data.value)
+      initSections.value.splice(0, data.value.length, ...data.value)
     })
 
     return {
       t,
-      constant,
+      section,
       header,
       data,
       itemsTotal,
       idsSelected,
-      addConstantModal,
-      idCurrent,
-      constantCurrent,
       onSort,
       onItemsSelect,
-      deleteConstant,
-      deleteFewConstants,
-      showAddModal,
-      showUpdateModal
+      deleteSection,
+      deleteFewSections
     }
   }
 })

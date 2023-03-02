@@ -4,7 +4,7 @@
     class="nav nav-custom nav-tabs nav-line-tabs nav-line-tabs-2x border-0 fs-4 fw-semibold mb-n2">
     <li v-for="language in languages" :key="language.name" class="nav-item">
       <a
-        :href="`#${language.name}`"
+        :href="`#language-${language.id}-${language.name}-tab`"
         :data-bs-toggle="`tab`"
         :class="{active: language.name === languages[0].name}"
         class="nav-link text-active-primary pb-4">
@@ -15,7 +15,7 @@
   <div class="tab-content">
     <div
       v-for="language in languages"
-      :id="`${language.id}`"
+      :id="`language-${language.id}-${language.name}-tab`"
       :key="language.id"
       :role="['tab', 'panel'].join('')"
       :class="{'show active': language.name === languages[0].name}"

@@ -11,7 +11,7 @@
             :note="`Set ${section} thumbnail image. Only .png and .jpg image files are accepted`"
             @before-upload="handleBeforeUpload"
             @on-success="handleOnSuccess" />
-          <status ref="status" />
+          <status ref="status" :default="parentDefault" />
           <div class="card card-flush py-4">
             <div class="card-header">
               <div class="card-title">
@@ -163,13 +163,13 @@ import Thumbnail from "@/components/admin/thumbnail.vue"
 import {DocumentAdd} from "@element-plus/icons-vue"
 import {QuillEditor} from "@vueup/vue-quill"
 import {ElMessage as Message} from "element-plus"
-import {defineComponent, onMounted, ref} from "vue"
+import {defineComponent, onBeforeMount, onMounted, ref} from "vue"
 import {useRoute} from "vue-router"
 import {useStore} from "vuex"
 import axiosClient from "../../../plugins/axios"
 
 export default defineComponent({
-  name: "add-section",
+  name: "add-sections",
   components: {
     Toolbar,
     Thumbnail,
@@ -183,21 +183,23 @@ export default defineComponent({
   setup() {
     const route = useRoute()
     const store = useStore()
-    const {section} = route.params
+    const {section, id} = route.params
     const sections = ref(null)
 
+    const thumbnail = ref(null)
     const name = ref(null)
     const title = ref({})
     const description = ref({})
     const status = ref(null)
     const parent = ref(null)
+    const parentDefault = ref(null)
     const tags = ref([])
     const editors = ref([])
 
     const setEditorsRefs = function setEditorsRefs(editor) {
       if (editor && editor.getEditor()) {
-        const id = editor.getEditor().getAttribute("data-language-id")
-        editors.value.push({id, editor})
+        const editorId = editor.getEditor().getAttribute("data-language-id")
+        editors.value.push({id: editorId, editor})
       }
     }
 
@@ -246,7 +248,7 @@ export default defineComponent({
     }
 
     const handleOnSuccess = (response, file) => {
-      item.value.thumbnail = URL.createObjectURL(file.raw)
+      thumbnail.value = URL.createObjectURL(file.raw)
     }
 
     const handleBeforeUpload = (file) => {
@@ -263,6 +265,31 @@ export default defineComponent({
       return true
     }
 
+    onBeforeMount(() => {
+      if (id) {
+        axiosClient.get(`/${section}/show/${id}`).then((response) => {
+          const {languages} = store.state
+          const data = response.data.result
+
+          name.value = data.name
+          parentDefault.value = data[["parent", "id"].join("_")]
+
+          languages.forEach((language) => {
+            data.langs.forEach((lang) => {
+              if (Number(language.id) === Number(lang.id)) {
+                title.value[language.id] = lang.title
+                editors.value.forEach((editor) => {
+                  if (Number(language.id) === Number(editor.id)) {
+                    editor.editor.setHTML(lang.description)
+                  }
+                })
+              }
+            })
+          })
+        })
+      }
+    })
+
     onMounted(() => {
       axiosClient.get(`/${section}`).then((response) => {
         sections.value = response.data.result.data
@@ -272,11 +299,13 @@ export default defineComponent({
     return {
       section,
       sections,
+      thumbnail,
       name,
       title,
       description,
       status,
       parent,
+      parentDefault,
       tags,
       setEditorsRefs,
       handleOnSuccess,
