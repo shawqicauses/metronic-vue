@@ -1,45 +1,45 @@
-<!-- Done Reviewing: 30/01/2023 -->
+<!-- Done Reviewing -->
 <template>
   <form
-    id="kt_sign_in_form"
+    id="kt_password_reset_form"
     ref="form"
     action="#"
-    novalidate="false"
     class="form w-100"
     @submit.prevent="handleFormSubmission">
-    <div class="card-body">
-      <div class="text-start mb-10">
-        <h1 class="text-dark mb-3 fs-3x">Sign In</h1>
-        <div class="text-gray-400 fw-semibold fs-6">Get un-limited access and earn money</div>
+    <div class="text-start mb-10">
+      <h1 class="text-dark mb-3 fs-3x" data-kt-translate="password-reset-title">
+        Forgot Password?
+      </h1>
+      <div class="text-gray-400 fw-semibold fs-6" data-kt-translate="password-reset-desc">
+        Enter your email to reset your password
       </div>
-      <div class="fv-row mb-8">
-        <form-input
-          id="email"
-          v-model:formInputValue="user.email"
-          label="Email"
-          type="email"
-          name="email"
-          placeholder="Email"
-          autocomplete="off" />
-      </div>
-      <div class="fv-row mb-7">
-        <form-input
-          id="password"
-          ref="formPassword"
-          v-model:formInputValue="user.password"
-          label="Password"
-          type="password"
-          name="password"
-          placeholder="Password"
-          autocomplete="off" />
-      </div>
-      <div class="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-10">
-        <div></div>
-        <router-link to="/auth/forgot-password" class="link-primary">
-          Forgot Password?
+    </div>
+    <div class="fv-row mb-8">
+      <form-input
+        id="email"
+        v-model:formInputValue="user.email"
+        label="Email"
+        type="email"
+        name="email"
+        placeholder="Email"
+        autocomplete="off" />
+    </div>
+    <div class="d-flex flex-stack">
+      <div class="m-0">
+        <button
+          id="kt_password_reset_submit"
+          ref="formButton"
+          type="submit"
+          class="btn btn-primary me-2">
+          <span class="indicator-label">Submit</span>
+          <span class="indicator-progress">
+            Please wait ... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+          </span>
+        </button>
+        <router-link to="/auth/sign-in" class="btn btn-lg btn-light-primary fw-bold">
+          Cancel
         </router-link>
       </div>
-      <form-actions ref="formButton" button-id="kt_sign_in_submit" />
     </div>
   </form>
 </template>
@@ -48,16 +48,15 @@
 import {defineComponent, onMounted, ref} from "vue"
 import {useRouter} from "vue-router"
 import {useStore} from "vuex"
-import FormActions from "../uis/form/actions.vue"
 import FormInput from "../uis/form/input.vue"
 
 export default defineComponent({
-  name: "sign-in-form",
-  components: {FormInput, FormActions},
+  name: "forgot-password-form",
+  components: {FormInput},
   setup() {
     const router = useRouter()
     const store = useStore()
-    const user = {email: null, password: null}
+    const user = {email: null}
     const elements = {form: ref(null), formButton: ref(null), formError: ref(null)}
     let validator
 
@@ -72,19 +71,10 @@ export default defineComponent({
                 message: "The entered email is not a valid email address"
               }
             }
-          },
-          password: {
-            validators: {
-              notEmpty: {
-                message: "The password is required"
-              }
-            }
           }
         },
         plugins: {
-          trigger: new FormValidation.plugins.Trigger({
-            event: {password: false}
-          }),
+          trigger: new FormValidation.plugins.Trigger(),
           bootstrap: new FormValidation.plugins.Bootstrap5({
             rowSelector: ".fv-row",
             eleInvalidClass: "",
@@ -97,16 +87,16 @@ export default defineComponent({
     const handleFormSubmission = function handleFormSubmission() {
       validator.validate().then((status) => {
         if (status.toLowerCase() === "valid") {
-          elements.formButton.value.formButton.setAttribute("data-kt-indicator", "on")
-          elements.formButton.value.formButton.disable = true
-          elements.formButton.value.formButton.ariaDisabled = true
+          elements.formButton.value.setAttribute("data-kt-indicator", "on")
+          elements.formButton.value.disable = true
+          elements.formButton.value.ariaDisabled = true
 
           store
-            .dispatch("signIn", user)
+            .dispatch("forgotPassword", user)
             .then(() => {
               Swal.fire({
                 icon: "success",
-                text: "You have successfully signed in!",
+                text: "We have sent to you an email!",
                 confirmButtonText: "Okay. Thank you!",
                 buttonsStyling: false,
                 customClass: {confirmButton: "btn btn-primary"}
@@ -130,9 +120,9 @@ export default defineComponent({
               })
             })
             .finally(() => {
-              elements.formButton.value.formButton.removeAttribute("data-kt-indicator")
-              elements.formButton.value.formButton.disabled = false
-              elements.formButton.value.formButton.ariaDisabled = false
+              elements.formButton.value.removeAttribute("data-kt-indicator")
+              elements.formButton.value.disabled = false
+              elements.formButton.value.ariaDisabled = false
             })
         } else {
           Swal.fire({

@@ -1,16 +1,19 @@
 <!-- Done Reviewing: 29/01/2023 -->
 <template>
-  <div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+  <div
+    data-kt-menu-trigger="click"
+    class="menu-item menu-accordion"
+    :class="{'hover show': children.length > 0}">
     <span class="menu-link">
       <span class="menu-icon">
         <span class="svg-icon svg-icon-2">
-          <globe-icon />
+          <component :is="icon" />
         </span>
       </span>
       <span class="menu-title">{{ t(title) }}</span>
-      <span class="menu-arrow"></span>
+      <span v-if="children.length > 0" class="menu-arrow"></span>
     </span>
-    <div v-if="children" class="menu-sub menu-sub-accordion">
+    <div v-if="children.length > 0" class="menu-sub menu-sub-accordion">
       <div v-for="child in children" :key="child.title" class="menu-item">
         <router-link :to="`/dashboard/${child.link.replaceAll('.', '/')}`" class="menu-link">
           <span class="menu-bullet">

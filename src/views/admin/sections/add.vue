@@ -216,7 +216,7 @@ export default defineComponent({
 
         languages.forEach((language) => {
           languagesArray.push({
-            [["lang", "id"].join("")]: language.id
+            [["lang", "id"].join("")]: Number(language.id)
           })
         })
 
@@ -236,7 +236,12 @@ export default defineComponent({
       }
 
       createDescriptions()
-      axiosClient.post(`/${section}/create`, {
+      createLanguages(
+        {key: "title", values: title.value},
+        {key: "description", values: description.value}
+      )
+
+      axiosClient.post(id ? `/${section}/update/${id}` : `/${section}/create`, {
         name: name.value,
         [["parent", "id"].join("_")]: parent.value.value.value || 0,
         status: status.value.status,
@@ -276,7 +281,7 @@ export default defineComponent({
 
           languages.forEach((language) => {
             data.langs.forEach((lang) => {
-              if (Number(language.id) === Number(lang.id)) {
+              if (Number(language.id) === Number(lang[["lang", "id"].join("")])) {
                 title.value[language.id] = lang.title
                 editors.value.forEach((editor) => {
                   if (Number(language.id) === Number(editor.id)) {

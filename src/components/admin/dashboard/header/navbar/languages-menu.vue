@@ -10,9 +10,9 @@
         Language
         <span
           class="fs-8 rounded bg-light px-3 py-2 position-absolute translate-middle-y top-50 end-0">
-          {{ language.name }}
+          {{ language.name.charAt(0).toUpperCase() + language.name.slice(1) }}
           <img
-            :src="`../../../../../../src/assets/media/flags/${language.icon}`"
+            :src="language.icon"
             :alt="`${language.name} Icon`"
             class="w-15px h-15px rounded-1 ms-2" />
         </span>
@@ -26,12 +26,9 @@
           :class="{active: language.name === item.name}"
           @click.prevent="setLanguage(item.shortname)">
           <span class="symbol symbol-20px me-4">
-            <img
-              :src="`../../../../../../src/assets/media/flags/${item.icon}`"
-              :alt="`${item.name} Icon`"
-              class="rounded-1" />
+            <img :src="item.icon" :alt="`${item.name} Icon`" class="rounded-1" />
           </span>
-          {{ item.name }}
+          {{ item.name.charAt(0).toUpperCase() + item.name.slice(1) }}
         </router-link>
       </div>
     </div>

@@ -102,7 +102,7 @@
 
 <script>
 import {hideModal, removeModalBackdrop} from "@/core/helpers/dom"
-import {defineComponent, ref} from "vue"
+import {defineComponent, onBeforeUpdate, ref} from "vue"
 
 export default defineComponent({
   name: "modal-layout",
@@ -153,6 +153,10 @@ export default defineComponent({
         }
       })
     }
+
+    onBeforeUpdate(() => {
+      form.value.resetFields()
+    })
 
     expose({modal, form, loading})
     return {modal, form, loading, formSubmit, formDiscard}

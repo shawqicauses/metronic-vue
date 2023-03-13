@@ -79,6 +79,16 @@ const store = createStore({
         commit("UN_SET_USER")
         return response
       })
+    },
+    async forgotPassword({commit}, data) {
+      return axiosClient.post("/forgot-password", data).then((response) => {
+        return response.data
+      })
+    },
+    async resetPassword({commit}, data) {
+      return axiosClient.post("/reset-password", data).then((response) => {
+        return response.data
+      })
     }
   },
   mutations: {

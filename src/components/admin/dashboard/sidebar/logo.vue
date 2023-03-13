@@ -3,15 +3,15 @@
   <div id="kt_app_sidebar_logo" class="app-sidebar-logo px-6">
     <router-link to="/">
       <img
-        src="@/assets/media/logos/default.svg"
+        :src="CDN + '1/assets/media/logos/default.svg'"
         alt="Default Sidebar Logo"
         class="h-25px app-sidebar-logo-default theme-light-show" />
       <img
-        src="@/assets/media/logos/default-dark.svg"
+        :src="CDN + '1/assets/media/logos/default-dark.svg'"
         alt="Dark Sidebar Logo"
         class="h-25px app-sidebar-logo-default theme-dark-show" />
       <img
-        src="@/assets/media/logos/default-small.svg"
+        :src="CDN + '1/assets/media/logos/default-small.svg'"
         alt="Small Sidebar Logo"
         class="h-20px app-sidebar-logo-minimize" />
     </router-link>
@@ -25,6 +25,10 @@ import SidebarToggle from "./toggle.vue"
 
 export default defineComponent({
   name: "sidebar-logo",
-  components: {SidebarToggle}
+  components: {SidebarToggle},
+  setup() {
+    const CDN = "https://preview.keenthemes.com/metronic8/demo"
+    return {CDN}
+  }
 })
 </script>

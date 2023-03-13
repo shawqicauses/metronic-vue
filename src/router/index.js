@@ -4,8 +4,10 @@ import DashboardLayout from "@/components/layouts/admin/dashboard.vue"
 import i18n, {getI18nLanguages} from "@/plugins/i18n"
 import store from "@/store"
 import ConstantsList from "@/views/admin/constants/list.vue"
+import ForgotPassword from "@/views/admin/forgot-password.vue"
 import LabelsList from "@/views/admin/labels/list.vue"
 import LanguagesList from "@/views/admin/languages/list.vue"
+import NewPassword from "@/views/admin/new-password.vue"
 import SectionAdd from "@/views/admin/sections/add.vue"
 import SectionList from "@/views/admin/sections/list.vue"
 import SignIn from "@/views/admin/sign-in.vue"
@@ -81,6 +83,16 @@ const router = createRouter({
           path: "/auth/sign-up",
           name: "sign-up",
           component: SignUp
+        },
+        {
+          path: "/auth/forgot-password",
+          name: "forgot-password",
+          component: ForgotPassword
+        },
+        {
+          path: "/auth/new-password/:token",
+          name: "new-password",
+          component: NewPassword
         }
       ]
     }

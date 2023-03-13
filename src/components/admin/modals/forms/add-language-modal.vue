@@ -66,7 +66,21 @@
           v-model="language.icon"
           type="text"
           name="language-icon"
-          placeholder="icon.svg" />
+          placeholder="Icon URL" />
+      </el-form-item>
+    </div>
+    <div class="fv-row mb-7">
+      <label for="language-main" class="required fw-semibold fs-6 mb-2">Main</label>
+      <el-form-item prop="main" class="mb-0">
+        <el-switch
+          id="language-main"
+          v-model="language.main"
+          name="language-main"
+          class="ml-2"
+          style="
+            --el-switch-on-color: var(--bs-primary);
+            --el-switch-off-color: var(--bs-gray-200);
+          " />
       </el-form-item>
     </div>
   </modal-layout>
@@ -96,7 +110,8 @@ export default defineComponent({
       shortname: [{required: true, trigger: "change", message: "Short name is required"}],
       direction: [{required: true, trigger: "change", message: "Direction is required"}],
       dirword: [{required: true, trigger: "change", message: "Direction word is required"}],
-      icon: [{required: true, trigger: "change", message: "Icon is required"}]
+      icon: [{required: true, trigger: "change", message: "Icon is required"}],
+      main: [{required: false, trigger: "change"}]
     })
 
     const submit = function submit() {
@@ -111,8 +126,8 @@ export default defineComponent({
               shortname: language.value.shortname.toLowerCase(),
               direction: language.value.direction.toLowerCase(),
               dirword: language.value.dirword.toLowerCase(),
-              icon: language.value.icon.toLowerCase(),
-              main: 0,
+              icon: language.value.icon,
+              main: language.value.main,
               status: 1
             }
           )
@@ -160,6 +175,7 @@ export default defineComponent({
       language.value.direction = null
       language.value.dirword = null
       language.value.icon = null
+      language.value.main = null
     }
 
     expose({addLanguageModal})

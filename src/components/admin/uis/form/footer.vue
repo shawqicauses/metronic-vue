@@ -8,11 +8,13 @@
       data-kt-menu-offset="0px, 0px"
       class="btn btn-flex btn-link rotate">
       <img
-        :src="`../../../../../src/assets/media/flags/${language.icon}`"
+        :src="language.icon"
         :alt="`${language.name} Icon`"
         data-kt-element="current-lang-flag"
         class="w-25px h-25px rounded-circle me-3" />
-      <span data-kt-element="current-lang-name" class="me-2">{{ language.name }}</span>
+      <span data-kt-element="current-lang-name" class="me-2">{{
+        language.name.charAt(0).toUpperCase() + language.name.slice(1)
+      }}</span>
       <span class="svg-icon svg-icon-3 svg-icon-muted rotate-180 m-0">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -31,12 +33,12 @@
       data-kt-menu="true"
       class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-4">
       <languages-menu-item
-        v-for="languageItem in languages"
-        :key="languageItem.name"
-        :name="languageItem.name"
-        :icon="languageItem.icon"
-        :link="languageItem.link"
-        @set-language="setLanguage(languageItem.shortname)" />
+        v-for="item in languages"
+        :key="item.name"
+        :name="item.name.charAt(0).toUpperCase() + item.name.slice(1)"
+        :icon="item.icon"
+        :link="item.link"
+        @set-language="setLanguage(item.shortname)" />
     </div>
   </div>
 </template>

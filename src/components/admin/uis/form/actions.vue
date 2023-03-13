@@ -10,19 +10,19 @@
     </button>
     <div class="d-flex align-items-center">
       <div class="text-gray-400 fw-semibold fs-6 me-6">Or</div>
-      <a href="#" class="symbol symbol-circle symbol-45px w-45px bg-light me-3">
+      <a href="#" class="symbol symbol-circle symbol-45px w-45px me-3">
         <img
           src="../../../../../src/assets/media/brand-logos/google.svg"
           alt="Google Icon"
           class="p-4" />
       </a>
-      <a href="#" class="symbol symbol-circle symbol-45px w-45px bg-light me-3">
+      <a href="#" class="symbol symbol-circle symbol-45px w-45px me-3">
         <img
           src="../../../../../src/assets/media/brand-logos/facebook.svg"
           alt="Facebook Icon"
           class="p-4" />
       </a>
-      <a href="#" class="symbol symbol-circle symbol-45px w-45px bg-light">
+      <a href="#" class="symbol symbol-circle symbol-45px w-45px">
         <img
           src="../../../../../src/assets/media/brand-logos/apple-black.svg"
           alt="Apple Icon"
